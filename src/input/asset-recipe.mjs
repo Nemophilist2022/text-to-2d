@@ -1,10 +1,12 @@
 import { createGenerationPacket } from '../generation/generation-packet.mjs';
+import { getVisualPreset } from '../visual/visual-presets.mjs';
 
 export function compileAssetRecipe({ text, selections = {} }) {
   const assetType = selections.assetType ?? inferAssetType(text);
   const style = selections.style ?? inferStyle(text);
   const size = parseSize(selections.size ?? '64x64');
   const subject = inferSubject(text, assetType);
+  const visualPreset = getVisualPreset(subject);
   const animation = selections.animation ?? 'idle';
   const frameCount = selections.frameCount ?? defaultFrameCount(assetType);
   const frameLabels = Array.from({ length: frameCount }, (_, index) => `${animation}_${index}`);
@@ -14,6 +16,11 @@ export function compileAssetRecipe({ text, selections = {} }) {
     assetId: `${subject}-${animation}`,
     assetType,
     subject,
+    visualPreset,
+    visualArchetype: visualPreset?.visualArchetype,
+    silhouette: visualPreset?.silhouette ?? [],
+    requiredDetails: visualPreset?.requiredDetails ?? [],
+    forbidden: visualPreset?.forbidden ?? [],
     style,
     size,
     animation,
@@ -36,6 +43,9 @@ export function buildAssetRequestFromRecipe(recipe, { backendId = 'codex-local' 
     generationPacket,
     parameters: {
       subject: recipe.subject,
+      visualArchetype: recipe.visualArchetype,
+      requiredDetails: recipe.requiredDetails,
+      forbidden: recipe.forbidden,
       sourceText: recipe.text,
       style: recipe.style,
       size: recipe.size,
@@ -74,6 +84,7 @@ function inferStyle(text) {
 
 function inferSubject(text, assetType) {
   const lower = text?.toLowerCase() ?? '';
+  if (text?.includes('宝石') || text?.includes('水晶') || lower.includes('gem') || lower.includes('crystal')) return 'gem';
   if (text?.includes('骑士') || lower.includes('knight')) return 'knight';
   if (text?.includes('史莱姆') || lower.includes('slime')) return 'slime';
   if (text?.includes('能量核心') || lower.includes('core')) return 'energy-core';

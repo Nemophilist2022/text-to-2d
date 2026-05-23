@@ -8,6 +8,8 @@ import { createApiBackendPlaceholder } from '../src/backends/api-backend-placeho
 import { createChatSvgBackend, loadChatSvgConfig } from '../src/backends/chat-svg-backend.mjs';
 import { createImageApiBackend, loadImageApiConfig } from '../src/backends/image-api-backend.mjs';
 import { createGenerationPacket } from '../src/generation/generation-packet.mjs';
+import { compileAssetRecipe } from '../src/input/asset-recipe.mjs';
+import { validateSvgQuality } from '../src/quality/svg-quality-gate.mjs';
 
 const request = {
   assetId: 'hero-idle',
@@ -176,6 +178,80 @@ test('chat svg backend parses strict json frames from chat completions', async (
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, 'https://api.example.test/v1/chat/completions');
   assert.equal(JSON.parse(calls[0].options.body).model, 'gpt-5.5');
+});
+
+test('chat svg request body includes gem visual preset constraints', async () => {
+  const gemPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u751f\u6210\u4e00\u4e2a\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  }));
+  const calls = [];
+  const backend = createChatSvgBackend({
+    config: {
+      baseUrl: 'https://api.example.test',
+      apiKey: 'test-key',
+      model: 'gpt-5.5',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      return {
+        ok: true,
+        async json() {
+          return {
+            choices: [{
+              message: {
+                content: JSON.stringify({
+                  frames: [{
+                    frameId: 'idle_0',
+                    svg: '<svg width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges"><polygon points="16,2 28,14 16,30 4,14" fill="#55aaff"/><path d="M16 2 L22 14 L16 30 L10 14 Z" fill="#2277cc"/><polygon points="10,8 14,6 13,10" fill="#fff"/></svg>',
+                  }],
+                }),
+              },
+            }],
+          };
+        },
+      };
+    },
+  });
+
+  await backend.generate({ request, packet: gemPacket });
+
+  const body = JSON.parse(calls[0].options.body);
+  const serializedMessages = JSON.stringify(body.messages);
+  assert.match(serializedMessages, /faceted_crystal/);
+  assert.match(serializedMessages, /diamond or hexagonal crystal outline/);
+  assert.match(serializedMessages, /angular polygon facets/);
+  assert.match(serializedMessages, /No lantern/);
+  assert.match(serializedMessages, /shape-rendering=.*crispEdges/);
+});
+
+test('gem svg quality gate rejects lantern-like black background output', () => {
+  const gemPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u751f\u6210\u4e00\u4e2a\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  }));
+
+  assert.throws(
+    () => validateSvgQuality({
+      svg: '<svg width="32" height="32"><rect width="32" height="32" fill="#000"/><text>lantern handle base</text><rect x="8" y="4" width="16" height="24" fill="#ffaa00"/></svg>',
+      packet: gemPacket,
+      frameId: 'idle_0',
+    }),
+    /quality gate failed/,
+  );
+});
+
+test('gem svg quality gate accepts transparent faceted polygon output', () => {
+  const gemPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u751f\u6210\u4e00\u4e2a\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  }));
+
+  assert.doesNotThrow(() => validateSvgQuality({
+    svg: '<svg width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges"><polygon points="16,2 28,14 16,30 4,14" fill="#55aaff"/><path d="M16 2 L22 14 L16 30 L10 14 Z" fill="#2277cc"/><polygon points="10,8 14,6 13,10" fill="#fff"/></svg>',
+    packet: gemPacket,
+    frameId: 'idle_0',
+  }));
 });
 
 test('chat svg backend fails clearly when api key is missing', async () => {

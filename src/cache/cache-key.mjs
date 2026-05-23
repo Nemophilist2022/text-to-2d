@@ -21,6 +21,9 @@ export function createCacheKey(request, backend) {
 function strongParameters(parameters = {}) {
   return {
     subject: parameters.subject,
+    visualArchetype: parameters.visualArchetype,
+    requiredDetails: parameters.requiredDetails,
+    forbidden: parameters.forbidden,
     sourceText: parameters.sourceText,
     style: parameters.style,
     size: parameters.size,

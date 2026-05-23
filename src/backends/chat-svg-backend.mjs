@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { validateSvgQuality } from '../quality/svg-quality-gate.mjs';
 
 export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl = globalThis.fetch } = {}) {
   return {
@@ -36,12 +37,14 @@ export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl =
       const frames = packet.frameLabels.map((frameId, order) => {
         const frame = parsed.frames.find((candidate) => candidate.frameId === frameId);
         if (!frame?.svg) throw new Error(`chat-svg response missing svg for frame: ${frameId}`);
+        const content = normalizeSvg(frame.svg, packet.size);
+        validateSvgQuality({ svg: content, packet, frameId });
         return {
           frameId,
           order,
           fileName: `${frameId}.svg`,
           mediaType: 'image/svg+xml',
-          content: normalizeSvg(frame.svg, packet.size),
+          content,
         };
       });
 
@@ -78,6 +81,9 @@ function buildMessages(packet) {
         'Return strict JSON only. No markdown.',
         'Schema: {"frames":[{"frameId":"idle_0","svg":"<svg ...>...</svg>"}]}',
         'Each SVG must be self-contained, valid, use transparent background, and fit the requested size.',
+        'Do not draw full-canvas background rectangles or black occluder blocks.',
+        'Set shape-rendering="crispEdges" on every SVG root.',
+        'For gem/faceted_crystal subjects, use polygon/path facet geometry and avoid lamp, lantern, handle, base, or container shapes.',
       ].join(' '),
     },
     {
@@ -88,9 +94,20 @@ function buildMessages(packet) {
         negativePrompt: packet.negativePrompt,
         assetType: packet.assetType,
         subject: packet.subject,
+        visualArchetype: packet.visualArchetype,
+        silhouette: packet.silhouette,
+        requiredDetails: packet.requiredDetails,
+        forbidden: packet.forbidden,
         style: packet.style,
         size: packet.size,
         frameLabels: packet.frameLabels,
+        hardRules: [
+          'Transparent background only; no full-canvas solid background.',
+          'No black background blocks or black occluders.',
+          'SVG root must include shape-rendering="crispEdges".',
+          'Gem assets must be faceted crystals built from polygon/path shapes.',
+          'No lantern, no lamp, no handle, no base, no rectangular container.',
+        ],
         outputContract: packet.outputContract,
       }),
     },
