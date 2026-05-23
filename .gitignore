@@ -1,3 +1,4 @@
 cache/
 exports/
 demo-workspace/
+.worktrees/
