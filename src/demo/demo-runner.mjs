@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 import { runAssetJob } from '../core/orchestrator.mjs';
 import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
+import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
 import { demoRequest } from './demo-request.mjs';
 
 export async function runDemo({ workspace = cwd() } = {}) {
@@ -11,13 +12,15 @@ export async function runDemo({ workspace = cwd() } = {}) {
     workspace,
     backends: {
       prebuilt: createPrebuiltBackend(),
+      'mock-ai': createMockAiBackend(),
     },
   };
 
   const first = await runAssetJob(demoRequest, options);
   const second = await runAssetJob(demoRequest, options);
+  const backendChanged = await runAssetJob({ ...demoRequest, backendId: 'mock-ai' }, options);
 
-  return { first, second };
+  return { first, second, backendChanged };
 }
 
 export function isDirectRun(importMetaUrl, argvPath) {
@@ -47,6 +50,13 @@ if (isDirectRun(import.meta.url, process.argv[1])) {
       exportRefs: result.second.exportRefs,
       metadataRef: result.second.metadataRef,
       events: result.second.events,
+    },
+    backendChanged: {
+      status: result.backendChanged.status,
+      cacheStatus: result.backendChanged.cacheStatus,
+      exportRefs: result.backendChanged.exportRefs,
+      metadataRef: result.backendChanged.metadataRef,
+      events: result.backendChanged.events,
     },
   }, null, 2));
 }

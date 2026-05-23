@@ -13,8 +13,10 @@ test('demo runner executes miss then hit and returns exported files', async () =
 
     assert.equal(result.first.cacheStatus, 'miss');
     assert.equal(result.second.cacheStatus, 'hit');
-    assert.equal(result.first.exportRefs.length, 1);
+    assert.equal(result.backendChanged.cacheStatus, 'miss');
+    assert.equal(result.first.exportRefs.frames.length, 4);
     assert.deepEqual(result.second.exportRefs, result.first.exportRefs);
+    assert.notEqual(result.backendChanged.cacheKey, result.first.cacheKey);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

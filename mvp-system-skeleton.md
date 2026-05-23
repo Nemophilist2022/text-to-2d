@@ -261,3 +261,13 @@ AssetJobResult
 - MVP 导出格式定为：单图目录 + metadata，或加入 sprite sheet。
 - MVP 后端定为：prebuilt backend 必做，真实 AI backend 是否只留接口。
 - MVP 后处理最小集合定下来。
+
+## 9. MVP+ 已收敛实现边界
+
+- 入口形态：CLI / demo runner。
+- 素材类型：`character / hero / idle` 固定演示路径。
+- 帧规格：4 帧，64x64，横向 sprite sheet。
+- 后端：`prebuilt` 与 `mock-ai`，均为确定性本地后端；真实 AI 不进入 MVP+ 成败路径。
+- 后处理：保持帧顺序、统一帧尺寸、记录 bounds、记录 pivot、生成 processed manifest。
+- 导出：`frames/*.svg`、`spritesheet.svg`、`atlas.json`、`run.json`。
+- 缓存：raw / processed / exports 三层，cache key 包含强参数、backend version、postprocess version、export version。

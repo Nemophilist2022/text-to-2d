@@ -1,4 +1,6 @@
 cache/
+!src/cache/
+!src/cache/**
 exports/
 demo-workspace/
 .worktrees/
