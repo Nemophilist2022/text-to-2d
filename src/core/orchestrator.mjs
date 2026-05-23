@@ -40,6 +40,7 @@ export async function runAssetJob(request, options) {
     const rawManifest = await cache.writeRaw(cacheKey, generated);
 
     processedManifest = await runPostprocess(rawManifest, request.postprocessSpec, request);
+    processedManifest.backendMetadata = rawManifest.metadata ?? {};
     events.push('postprocess.frames');
     processedManifest = await cache.writeProcessed(cacheKey, processedManifest);
   }
@@ -58,6 +59,7 @@ export async function runAssetJob(request, options) {
     rawAssetRef,
     processedAssetRef,
     outputFiles: {},
+    qualityReports: processedManifest.backendMetadata?.qualityReports ?? [],
     events,
   };
 

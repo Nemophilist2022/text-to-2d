@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../src/input/asset-recipe.mjs';
 import { createGenerationPacket } from '../src/generation/generation-packet.mjs';
+import { compilePrompt } from '../src/generation/prompt-compiler.mjs';
 
 test('text input compiles into a stable asset recipe', () => {
   const recipe = compileAssetRecipe({
@@ -100,4 +101,56 @@ test('gem generation packet carries strong faceted crystal prompt constraints', 
   assert.match(packet.negativePrompt, /handle/);
   assert.match(packet.negativePrompt, /base/);
   assert.match(packet.negativePrompt, /black background block/);
+});
+
+test('text input maps five asset classes to visual preset ids', () => {
+  const cases = [
+    ['\u50cf\u7d20\u98ce\u9a91\u58eb\u89d2\u8272', { assetType: 'character', style: 'pixel', size: '64x64' }, 'knight_character'],
+    ['\u50cf\u7d20\u98ce\u53f2\u83b1\u59c6\u602a\u7269', { assetType: 'monster', style: 'pixel', size: '64x64' }, 'slime_monster'],
+    ['\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177', { assetType: 'item', style: 'pixel', size: '32x32' }, 'gem_item'],
+    ['\u8349\u5730\u5730\u56fe\u5757', { assetType: 'map-tile', style: 'pixel', size: '32x32' }, 'grass_tile'],
+    ['\u7ea2\u5fc3 UI \u56fe\u6807', { assetType: 'ui-icon', style: 'pixel', size: '32x32' }, 'heart_ui_icon'],
+  ];
+
+  for (const [text, selections, presetId] of cases) {
+    const recipe = compileAssetRecipe({ text, selections });
+    assert.equal(recipe.concept.presetId, presetId);
+    assert.equal(recipe.presetId, presetId);
+    assert.equal(recipe.visualPreset.id, presetId);
+  }
+});
+
+test('unknown subject falls back to generic preset for selected asset type', () => {
+  const recipe = compileAssetRecipe({
+    text: '\u4e00\u4e2a\u6ca1\u6709\u547d\u4e2d\u5177\u4f53\u9884\u8bbe\u7684\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  });
+
+  assert.equal(recipe.concept.presetId, 'generic_item');
+  assert.equal(recipe.subject, 'item');
+});
+
+test('prompt compiler builds sections without subject-specific special cases', () => {
+  const recipe = compileAssetRecipe({
+    text: '\u7ea2\u5fc3 UI \u56fe\u6807',
+    selections: { assetType: 'ui-icon', style: 'pixel', size: '32x32' },
+  });
+  const outputContract = {
+    mediaType: 'image/svg+xml',
+    transparentBackground: true,
+    frameCount: recipe.frameCount,
+    frameLabels: recipe.frameLabels,
+    frameSize: recipe.size,
+  };
+
+  const compiled = compilePrompt({ concept: recipe.concept, preset: recipe.visualPreset, outputContract });
+
+  assert.match(compiled.prompt, /transparent background/);
+  assert.match(compiled.prompt, /32x32/);
+  assert.match(compiled.prompt, /shape-rendering="crispEdges"/);
+  assert.match(compiled.prompt, /UI icon/);
+  assert.match(compiled.prompt, /pixel art/);
+  assert.equal(compiled.promptSections.length, 4);
+  assert.match(compiled.negativePrompt, /photorealistic/);
+  assert.match(compiled.negativePrompt, /text label/);
 });

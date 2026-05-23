@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+﻿import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { validateSvgQuality } from '../quality/svg-quality-gate.mjs';
 
@@ -33,12 +33,17 @@ export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl =
       const content = json.choices?.[0]?.message?.content;
       if (!content) throw new Error('chat-svg response missing choices[0].message.content');
       const parsed = parseFrameJson(content);
+      const qualityReports = [];
 
       const frames = packet.frameLabels.map((frameId, order) => {
         const frame = parsed.frames.find((candidate) => candidate.frameId === frameId);
         if (!frame?.svg) throw new Error(`chat-svg response missing svg for frame: ${frameId}`);
         const content = normalizeSvg(frame.svg, packet.size);
-        validateSvgQuality({ svg: content, packet, frameId });
+        const qualityReport = validateSvgQuality({ svg: content, packet, frameId });
+        qualityReports.push(qualityReport);
+        if (!qualityReport.passed) {
+          throw new Error(`chat-svg quality gate failed for ${frameId}: ${qualityReport.errors.join('; ')}`);
+        }
         return {
           frameId,
           order,
@@ -57,7 +62,9 @@ export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl =
           model: config.model,
           requestId: packet.requestId,
           prompt: packet.prompt,
+          promptSections: packet.promptSections,
           outputContract: packet.outputContract,
+          qualityReports,
         },
       };
     },
@@ -80,18 +87,21 @@ function buildMessages(packet) {
         'You generate SVG assets for 2D games.',
         'Return strict JSON only. No markdown.',
         'Schema: {"frames":[{"frameId":"idle_0","svg":"<svg ...>...</svg>"}]}',
-        'Each SVG must be self-contained, valid, use transparent background, and fit the requested size.',
-        'Do not draw full-canvas background rectangles or black occluder blocks.',
-        'Set shape-rendering="crispEdges" on every SVG root.',
-        'For gem/faceted_crystal subjects, use polygon/path facet geometry and avoid lamp, lantern, handle, base, or container shapes.',
+        'Each SVG must be self-contained, valid, use transparent background, fit the requested size, and set shape-rendering="crispEdges" on the SVG root.',
+        'Do not draw full-canvas solid background rectangles or black occluder blocks.',
+        'Follow the supplied concept, promptSections, and qualityContract.',
       ].join(' '),
     },
     {
       role: 'user',
       content: JSON.stringify({
         task: 'Generate 2D game asset SVG frames.',
+        concept: packet.concept,
+        presetId: packet.presetId,
         prompt: packet.prompt,
+        promptSections: packet.promptSections,
         negativePrompt: packet.negativePrompt,
+        qualityContract: packet.qualityContract,
         assetType: packet.assetType,
         subject: packet.subject,
         visualArchetype: packet.visualArchetype,
@@ -101,13 +111,6 @@ function buildMessages(packet) {
         style: packet.style,
         size: packet.size,
         frameLabels: packet.frameLabels,
-        hardRules: [
-          'Transparent background only; no full-canvas solid background.',
-          'No black background blocks or black occluders.',
-          'SVG root must include shape-rendering="crispEdges".',
-          'Gem assets must be faceted crystals built from polygon/path shapes.',
-          'No lantern, no lamp, no handle, no base, no rectangular container.',
-        ],
         outputContract: packet.outputContract,
       }),
     },
@@ -120,7 +123,7 @@ function parseFrameJson(content) {
 }
 
 function normalizeSvg(svg, size) {
-  if (!svg.includes('<svg')) throw new Error('chat-svg frame content is not SVG');
+  if (!svg.includes('<svg')) return svg;
   if (svg.includes('width=') && svg.includes('height=')) return svg;
   return svg.replace('<svg ', `<svg width="${size.width}" height="${size.height}" viewBox="0 0 ${size.width} ${size.height}" `);
 }

@@ -1,36 +1,70 @@
-const FORBIDDEN_WORDS = ['lantern', 'lamp', 'handle', 'base'];
+﻿export const QUALITY_GATE_VERSION = 'quality-gate-1';
+
 const SOLID_BACKGROUND_FILLS = ['#000', '#000000', 'black', '#111', '#111111'];
 
 export function validateSvgQuality({ svg, packet, frameId = 'unknown' }) {
-  const failures = [];
+  const errors = [];
+  const warnings = [];
+  const checks = [];
   const normalized = String(svg ?? '');
   const lower = normalized.toLowerCase();
 
-  if (!lower.includes('<svg')) failures.push('missing <svg root');
+  record(checks, 'svg-root', lower.includes('<svg'));
+  if (!lower.includes('<svg')) errors.push('missing <svg root');
 
-  if (isGemPacket(packet)) {
-    if (!lower.includes('<polygon') && !lower.includes('<path')) {
-      failures.push('gem requires polygon/path faceted structure');
+  const hasDimensions = hasTargetDimensions(normalized, packet?.size);
+  record(checks, 'target-dimensions', hasDimensions);
+  if (!hasDimensions) errors.push('missing target width/height');
+
+  const fullBackground = hasFullCanvasSolidBackground(normalized, packet?.size);
+  record(checks, 'no-full-canvas-solid-background', !fullBackground);
+  if (fullBackground) errors.push('full-canvas solid background is not allowed');
+
+  for (const rule of packet?.qualityContract?.requiredSvgFeatures ?? packet?.requiredSvgFeatures ?? []) {
+    const ok = hasSvgFeature(normalized, rule.feature);
+    record(checks, `feature:${rule.feature}`, ok);
+    if (!ok && rule.severity === 'error') errors.push(`required svg feature missing: ${featureLabel(rule.feature)}`);
+    if (!ok && rule.severity !== 'error') warnings.push(`recommended svg feature missing: ${rule.feature}`);
+  }
+
+  for (const word of packet?.qualityContract?.forbidden ?? packet?.forbidden ?? []) {
+    if (new RegExp(`\\b${escapeRegExp(word)}\\b`, 'i').test(normalized)) {
+      warnings.push(`forbidden visual word appears in svg text: ${word}`);
     }
-
-    for (const word of FORBIDDEN_WORDS) {
-      if (new RegExp(`\\b${word}\\b`, 'i').test(normalized)) {
-        failures.push(`forbidden visual word: ${word}`);
-      }
-    }
   }
 
-  if (hasFullCanvasSolidBackground(normalized, packet?.size)) {
-    failures.push('full-canvas solid background is not allowed');
-  }
-
-  if (failures.length > 0) {
-    throw new Error(`chat-svg quality gate failed for ${frameId}: ${failures.join('; ')}`);
-  }
+  return {
+    passed: errors.length === 0,
+    errors,
+    warnings,
+    checks,
+    frameId,
+    version: QUALITY_GATE_VERSION,
+  };
 }
 
-function isGemPacket(packet) {
-  return packet?.subject === 'gem' || packet?.visualArchetype === 'faceted_crystal';
+function record(checks, id, passed) {
+  checks.push({ id, passed });
+}
+
+function hasTargetDimensions(svg, size = {}) {
+  if (!size?.width || !size?.height) return true;
+  const root = svg.match(/<svg\b[^>]*>/i)?.[0] ?? '';
+  return attrValue(root, 'width') === String(size.width) && attrValue(root, 'height') === String(size.height);
+}
+
+function hasSvgFeature(svg, feature) {
+  const lower = svg.toLowerCase();
+  if (feature === 'polygonOrPath') return lower.includes('<polygon') || lower.includes('<path');
+  if (feature === 'path') return lower.includes('<path');
+  if (feature === 'polygon') return lower.includes('<polygon');
+  if (feature === 'circle') return lower.includes('<circle');
+  return true;
+}
+
+function featureLabel(feature) {
+  if (feature === 'polygonOrPath') return 'polygon/path';
+  return feature;
 }
 
 function hasFullCanvasSolidBackground(svg, size = {}) {
@@ -53,4 +87,8 @@ function hasFullCanvasSolidBackground(svg, size = {}) {
 
 function attrValue(tag, name) {
   return tag.match(new RegExp(`\\b${name}=["']?([^"'\\s>]+)`, 'i'))?.[1];
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

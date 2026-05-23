@@ -212,3 +212,80 @@ test('changing text subject style size or backend changes cache identity', async
     await rm(workspace, { recursive: true, force: true });
   }
 });
+
+test('preset prompt compiler and quality gate versions participate in cache identity', async () => {
+  const workspace = await mkdtemp(join(tmpdir(), 'asset-mvp-'));
+  try {
+    const options = { workspace, backends: { 'codex-local': createCodexLocalBackend() } };
+    const recipe = compileAssetRecipe({
+      text: '\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+      selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+    });
+    const baseRequest = buildAssetRequestFromRecipe(recipe, { backendId: 'codex-local' });
+    const presetChanged = {
+      ...baseRequest,
+      parameters: { ...baseRequest.parameters, presetId: 'generic_item' },
+    };
+    const promptCompilerChanged = {
+      ...baseRequest,
+      generationPacket: { ...baseRequest.generationPacket, promptCompilerVersion: 'prompt-compiler-test' },
+    };
+    const qualityGateChanged = {
+      ...baseRequest,
+      generationPacket: { ...baseRequest.generationPacket, qualityGateVersion: 'quality-gate-test' },
+    };
+
+    const first = await runAssetJob(baseRequest, options);
+    const preset = await runAssetJob(presetChanged, options);
+    const prompt = await runAssetJob(promptCompilerChanged, options);
+    const quality = await runAssetJob(qualityGateChanged, options);
+
+    assert.notEqual(preset.cacheKey, first.cacheKey);
+    assert.notEqual(prompt.cacheKey, first.cacheKey);
+    assert.notEqual(quality.cacheKey, first.cacheKey);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test('run metadata preserves backend quality reports through processed cache', async () => {
+  const workspace = await mkdtemp(join(tmpdir(), 'asset-mvp-'));
+  try {
+    const qualityBackend = {
+      backendId: 'quality-backend',
+      version: 'test-1',
+      async generate(input) {
+        const frameId = input.packet.frameLabels[0];
+        return {
+          backendId: 'quality-backend',
+          backendVersion: 'test-1',
+          frames: [{
+            frameId,
+            order: 0,
+            fileName: `${frameId}.svg`,
+            mediaType: 'image/svg+xml',
+            content: '<svg width="32" height="32" viewBox="0 0 32 32"><path d="M0 0H1V1Z"/></svg>',
+          }],
+          metadata: {
+            qualityReports: [{ frameId, passed: true, errors: [], warnings: ['weak silhouette'], checks: [] }],
+          },
+        };
+      },
+    };
+    const recipe = compileAssetRecipe({
+      text: '\u7ea2\u5fc3 UI \u56fe\u6807',
+      selections: { assetType: 'ui-icon', style: 'pixel', size: '32x32' },
+    });
+    const request = buildAssetRequestFromRecipe(recipe, { backendId: 'quality-backend' });
+
+    const first = await runAssetJob(request, { workspace, backends: { 'quality-backend': qualityBackend } });
+    const second = await runAssetJob(request, { workspace, backends: { 'quality-backend': qualityBackend } });
+
+    const firstRun = JSON.parse(await readFile(first.metadataRef, 'utf8'));
+    const secondRun = JSON.parse(await readFile(second.metadataRef, 'utf8'));
+    assert.deepEqual(firstRun.qualityReports[0].warnings, ['weak silhouette']);
+    assert.deepEqual(secondRun.qualityReports[0].warnings, ['weak silhouette']);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});

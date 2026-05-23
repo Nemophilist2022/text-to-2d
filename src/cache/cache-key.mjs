@@ -8,6 +8,8 @@ export function createCacheKey(request, backend) {
     normalizedAssetParameters: normalize(strongParameters(request.parameters)),
     backendId: request.backendId,
     backendVersion: backend.version ?? backend.backendVersion ?? 'unknown',
+    promptCompilerVersion: request.generationPacket?.promptCompilerVersion ?? 'none',
+    qualityGateVersion: request.generationPacket?.qualityGateVersion ?? 'none',
     postprocessVersion: request.postprocessSpec?.version ?? 'none',
     exportVersion: request.exportSpec?.version ?? 'none',
   };
@@ -21,6 +23,7 @@ export function createCacheKey(request, backend) {
 function strongParameters(parameters = {}) {
   return {
     subject: parameters.subject,
+    presetId: parameters.presetId,
     visualArchetype: parameters.visualArchetype,
     requiredDetails: parameters.requiredDetails,
     forbidden: parameters.forbidden,

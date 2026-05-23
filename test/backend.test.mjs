@@ -225,20 +225,66 @@ test('chat svg request body includes gem visual preset constraints', async () =>
   assert.match(serializedMessages, /shape-rendering=.*crispEdges/);
 });
 
+test('chat svg request body includes concept prompt sections and quality contract', async () => {
+  const heartPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u7ea2\u5fc3 UI \u56fe\u6807',
+    selections: { assetType: 'ui-icon', style: 'pixel', size: '32x32' },
+  }));
+  const calls = [];
+  const backend = createChatSvgBackend({
+    config: {
+      baseUrl: 'https://api.example.test',
+      apiKey: 'test-key',
+      model: 'gpt-5.5',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      return {
+        ok: true,
+        async json() {
+          return {
+            choices: [{
+              message: {
+                content: JSON.stringify({
+                  frames: [{
+                    frameId: 'idle_0',
+                    svg: '<svg width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges"><path d="M16 28 L5 16 C-1 8 8 1 16 8 C24 1 33 8 27 16 Z" fill="#e33"/></svg>',
+                  }],
+                }),
+              },
+            }],
+          };
+        },
+      };
+    },
+  });
+
+  const result = await backend.generate({ request, packet: heartPacket });
+
+  const body = JSON.parse(calls[0].options.body);
+  const serializedMessages = JSON.stringify(body.messages);
+  assert.match(serializedMessages, /heart_ui_icon/);
+  assert.match(serializedMessages, /promptSections/);
+  assert.match(serializedMessages, /qualityContract/);
+  assert.match(serializedMessages, /ui-icon/);
+  assert.equal(result.metadata.qualityReports[0].passed, true);
+});
+
 test('gem svg quality gate rejects lantern-like black background output', () => {
   const gemPacket = createGenerationPacket(compileAssetRecipe({
     text: '\u751f\u6210\u4e00\u4e2a\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
     selections: { assetType: 'item', style: 'pixel', size: '32x32' },
   }));
 
-  assert.throws(
-    () => validateSvgQuality({
-      svg: '<svg width="32" height="32"><rect width="32" height="32" fill="#000"/><text>lantern handle base</text><rect x="8" y="4" width="16" height="24" fill="#ffaa00"/></svg>',
-      packet: gemPacket,
-      frameId: 'idle_0',
-    }),
-    /quality gate failed/,
-  );
+  const report = validateSvgQuality({
+    svg: '<svg width="32" height="32"><rect width="32" height="32" fill="#000"/><text>lantern handle base</text><rect x="8" y="4" width="16" height="24" fill="#ffaa00"/></svg>',
+    packet: gemPacket,
+    frameId: 'idle_0',
+  });
+
+  assert.equal(report.passed, false);
+  assert.match(report.errors.join('\n'), /full-canvas solid background/);
+  assert.match(report.errors.join('\n'), /polygon\/path/);
 });
 
 test('gem svg quality gate accepts transparent faceted polygon output', () => {
@@ -247,11 +293,39 @@ test('gem svg quality gate accepts transparent faceted polygon output', () => {
     selections: { assetType: 'item', style: 'pixel', size: '32x32' },
   }));
 
-  assert.doesNotThrow(() => validateSvgQuality({
+  const report = validateSvgQuality({
     svg: '<svg width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges"><polygon points="16,2 28,14 16,30 4,14" fill="#55aaff"/><path d="M16 2 L22 14 L16 30 L10 14 Z" fill="#2277cc"/><polygon points="10,8 14,6 13,10" fill="#fff"/></svg>',
     packet: gemPacket,
     frameId: 'idle_0',
+  });
+
+  assert.equal(report.passed, true);
+  assert.deepEqual(report.errors, []);
+});
+
+test('quality gate returns hard errors and non-blocking warnings by preset rule', () => {
+  const heartPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u7ea2\u5fc3 UI \u56fe\u6807',
+    selections: { assetType: 'ui-icon', style: 'pixel', size: '32x32' },
   }));
+  const nonSvg = validateSvgQuality({ svg: 'not svg', packet: heartPacket, frameId: 'idle_0' });
+  const solidBackground = validateSvgQuality({
+    svg: '<svg width="32" height="32"><rect x="0" y="0" width="32" height="32" fill="#fff"/></svg>',
+    packet: heartPacket,
+    frameId: 'idle_0',
+  });
+  const weakHeart = validateSvgQuality({
+    svg: '<svg width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges"><circle cx="16" cy="16" r="9" fill="#e33"/></svg>',
+    packet: heartPacket,
+    frameId: 'idle_0',
+  });
+
+  assert.equal(nonSvg.passed, false);
+  assert.match(nonSvg.errors.join('\n'), /missing <svg root/);
+  assert.equal(solidBackground.passed, false);
+  assert.match(solidBackground.errors.join('\n'), /full-canvas solid background/);
+  assert.equal(weakHeart.passed, true);
+  assert.match(weakHeart.warnings.join('\n'), /recommended svg feature missing: path/);
 });
 
 test('chat svg backend fails clearly when api key is missing', async () => {
