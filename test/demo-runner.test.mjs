@@ -39,6 +39,7 @@ test('cli options can select an isolated workspace', () => {
       workspace: 'demo-workspace',
       text: '生成一个像素风骑士角色',
       backendId: 'codex-local',
+      skipBackendCompare: false,
       selections: { assetType: 'character', style: 'pixel', size: '64x64' },
     },
   );
@@ -48,5 +49,19 @@ test('cli options can select image api backend without embedding credentials', (
   assert.equal(
     resolveCliOptions(['node', 'src/demo/demo-runner.mjs', '--backend', 'image-api']).backendId,
     'image-api',
+  );
+});
+
+test('cli options can select chat svg backend', () => {
+  assert.equal(
+    resolveCliOptions(['node', 'src/demo/demo-runner.mjs', '--backend', 'chat-svg']).backendId,
+    'chat-svg',
+  );
+});
+
+test('cli options can skip backend comparison to preserve selected backend outputs', () => {
+  assert.equal(
+    resolveCliOptions(['node', 'src/demo/demo-runner.mjs', '--skip-backend-compare']).skipBackendCompare,
+    true,
   );
 });

@@ -7,6 +7,7 @@ import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
 import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
 import { createCodexLocalBackend } from '../backends/codex-local-backend.mjs';
 import { createImageApiBackend } from '../backends/image-api-backend.mjs';
+import { createChatSvgBackend } from '../backends/chat-svg-backend.mjs';
 import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
 
 const DEFAULT_TEXT = '生成一个像素风骑士角色';
@@ -17,6 +18,7 @@ export async function runDemo({
   text = DEFAULT_TEXT,
   selections = DEFAULT_SELECTIONS,
   backendId = 'codex-local',
+  skipBackendCompare = false,
 } = {}) {
   const recipe = compileAssetRecipe({ text, selections });
   const request = buildAssetRequestFromRecipe(recipe, { backendId });
@@ -27,12 +29,13 @@ export async function runDemo({
       'mock-ai': createMockAiBackend(),
       'codex-local': createCodexLocalBackend(),
       'image-api': createImageApiBackend(),
+      'chat-svg': createChatSvgBackend(),
     },
   };
 
   const first = await runAssetJob(request, options);
   const second = await runAssetJob(request, options);
-  const backendChanged = await runAssetJob({ ...request, backendId: 'mock-ai' }, options);
+  const backendChanged = skipBackendCompare ? null : await runAssetJob({ ...request, backendId: 'mock-ai' }, options);
 
   return { recipe, packet: request.generationPacket, first, second, backendChanged };
 }
@@ -49,11 +52,13 @@ export function resolveCliOptions(argv) {
   const assetTypeFlagIndex = argv.indexOf('--asset-type');
   const sizeFlagIndex = argv.indexOf('--size');
   const backendFlagIndex = argv.indexOf('--backend');
+  const skipBackendCompare = argv.includes('--skip-backend-compare');
 
   return {
     workspace: workspaceFlagIndex === -1 ? cwd() : argv[workspaceFlagIndex + 1],
     text: textFlagIndex === -1 ? DEFAULT_TEXT : argv[textFlagIndex + 1],
     backendId: backendFlagIndex === -1 ? 'codex-local' : argv[backendFlagIndex + 1],
+    skipBackendCompare,
     selections: {
       assetType: assetTypeFlagIndex === -1 ? DEFAULT_SELECTIONS.assetType : argv[assetTypeFlagIndex + 1],
       style: styleFlagIndex === -1 ? DEFAULT_SELECTIONS.style : argv[styleFlagIndex + 1],
@@ -81,7 +86,7 @@ if (isDirectRun(import.meta.url, process.argv[1])) {
       metadataRef: result.second.metadataRef,
       events: result.second.events,
     },
-    backendChanged: {
+    backendChanged: result.backendChanged && {
       status: result.backendChanged.status,
       cacheStatus: result.backendChanged.cacheStatus,
       exportRefs: result.backendChanged.exportRefs,
