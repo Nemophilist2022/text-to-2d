@@ -7,6 +7,8 @@ import { join } from 'node:path';
 import { runAssetJob } from '../src/core/orchestrator.mjs';
 import { createPrebuiltBackend } from '../src/backends/prebuilt-backend.mjs';
 import { createMockAiBackend } from '../src/backends/mock-ai-backend.mjs';
+import { createCodexLocalBackend } from '../src/backends/codex-local-backend.mjs';
+import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../src/input/asset-recipe.mjs';
 
 const request = {
   assetId: 'hero-idle',
@@ -143,6 +145,69 @@ test('forceRegenerate bypasses cache', async () => {
     assert.equal(regenerated.cacheStatus, 'bypassed');
     assert.equal(regenerated.events.includes('cache.bypassed'), true);
     assert.equal(regenerated.events.includes('backend.generate'), true);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test('codex-local request created from text input hits cache on second run', async () => {
+  const workspace = await mkdtemp(join(tmpdir(), 'asset-mvp-'));
+  try {
+    const recipe = compileAssetRecipe({
+      text: '生成一个像素风骑士角色',
+      selections: { assetType: 'character', style: 'pixel', size: '64x64' },
+    });
+    const textRequest = buildAssetRequestFromRecipe(recipe, { backendId: 'codex-local' });
+    const options = { workspace, backends: { 'codex-local': createCodexLocalBackend() } };
+
+    const first = await runAssetJob(textRequest, options);
+    const second = await runAssetJob(textRequest, options);
+
+    assert.equal(first.cacheStatus, 'miss');
+    assert.equal(second.cacheStatus, 'hit');
+    assert.equal(first.exportRefs.frames.length, 4);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test('changing text subject style size or backend changes cache identity', async () => {
+  const workspace = await mkdtemp(join(tmpdir(), 'asset-mvp-'));
+  try {
+    const options = {
+      workspace,
+      backends: {
+        'codex-local': createCodexLocalBackend(),
+        'mock-ai': createMockAiBackend(),
+      },
+    };
+    const knightRecipe = compileAssetRecipe({
+      text: '生成一个像素风骑士角色',
+      selections: { assetType: 'character', style: 'pixel', size: '64x64' },
+    });
+    const slimeRecipe = compileAssetRecipe({
+      text: '生成一个像素风史莱姆怪物',
+      selections: { assetType: 'monster', style: 'pixel', size: '64x64' },
+    });
+    const darkRecipe = compileAssetRecipe({
+      text: '生成一个像素风骑士角色',
+      selections: { assetType: 'character', style: 'dark', size: '64x64' },
+    });
+    const smallRecipe = compileAssetRecipe({
+      text: '生成一个像素风骑士角色',
+      selections: { assetType: 'character', style: 'pixel', size: '32x32' },
+    });
+
+    const first = await runAssetJob(buildAssetRequestFromRecipe(knightRecipe, { backendId: 'codex-local' }), options);
+    const textChanged = await runAssetJob(buildAssetRequestFromRecipe(slimeRecipe, { backendId: 'codex-local' }), options);
+    const styleChanged = await runAssetJob(buildAssetRequestFromRecipe(darkRecipe, { backendId: 'codex-local' }), options);
+    const sizeChanged = await runAssetJob(buildAssetRequestFromRecipe(smallRecipe, { backendId: 'codex-local' }), options);
+    const backendChanged = await runAssetJob(buildAssetRequestFromRecipe(knightRecipe, { backendId: 'mock-ai' }), options);
+
+    assert.notEqual(textChanged.cacheKey, first.cacheKey);
+    assert.notEqual(styleChanged.cacheKey, first.cacheKey);
+    assert.notEqual(sizeChanged.cacheKey, first.cacheKey);
+    assert.notEqual(backendChanged.cacheKey, first.cacheKey);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

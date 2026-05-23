@@ -5,22 +5,26 @@ import { resolve } from 'node:path';
 import { runAssetJob } from '../core/orchestrator.mjs';
 import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
 import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
-import { demoRequest } from './demo-request.mjs';
+import { createCodexLocalBackend } from '../backends/codex-local-backend.mjs';
+import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
 
-export async function runDemo({ workspace = cwd() } = {}) {
+export async function runDemo({ workspace = cwd(), text = '生成一个像素风骑士角色', selections = { assetType: 'character', style: 'pixel', size: '64x64' } } = {}) {
+  const recipe = compileAssetRecipe({ text, selections });
+  const request = buildAssetRequestFromRecipe(recipe, { backendId: 'codex-local' });
   const options = {
     workspace,
     backends: {
       prebuilt: createPrebuiltBackend(),
       'mock-ai': createMockAiBackend(),
+      'codex-local': createCodexLocalBackend(),
     },
   };
 
-  const first = await runAssetJob(demoRequest, options);
-  const second = await runAssetJob(demoRequest, options);
-  const backendChanged = await runAssetJob({ ...demoRequest, backendId: 'mock-ai' }, options);
+  const first = await runAssetJob(request, options);
+  const second = await runAssetJob(request, options);
+  const backendChanged = await runAssetJob({ ...request, backendId: 'mock-ai' }, options);
 
-  return { first, second, backendChanged };
+  return { recipe, packet: request.generationPacket, first, second, backendChanged };
 }
 
 export function isDirectRun(importMetaUrl, argvPath) {
@@ -30,13 +34,27 @@ export function isDirectRun(importMetaUrl, argvPath) {
 
 export function resolveCliOptions(argv) {
   const workspaceFlagIndex = argv.indexOf('--workspace');
-  if (workspaceFlagIndex === -1) return { workspace: cwd() };
-  return { workspace: argv[workspaceFlagIndex + 1] };
+  const textFlagIndex = argv.indexOf('--text');
+  const styleFlagIndex = argv.indexOf('--style');
+  const assetTypeFlagIndex = argv.indexOf('--asset-type');
+  const sizeFlagIndex = argv.indexOf('--size');
+
+  return {
+    workspace: workspaceFlagIndex === -1 ? cwd() : argv[workspaceFlagIndex + 1],
+    text: textFlagIndex === -1 ? '生成一个像素风骑士角色' : argv[textFlagIndex + 1],
+    selections: {
+      assetType: assetTypeFlagIndex === -1 ? 'character' : argv[assetTypeFlagIndex + 1],
+      style: styleFlagIndex === -1 ? 'pixel' : argv[styleFlagIndex + 1],
+      size: sizeFlagIndex === -1 ? '64x64' : argv[sizeFlagIndex + 1],
+    },
+  };
 }
 
 if (isDirectRun(import.meta.url, process.argv[1])) {
   const result = await runDemo(resolveCliOptions(process.argv));
   console.log(JSON.stringify({
+    recipe: result.recipe,
+    packet: result.packet,
     first: {
       status: result.first.status,
       cacheStatus: result.first.cacheStatus,

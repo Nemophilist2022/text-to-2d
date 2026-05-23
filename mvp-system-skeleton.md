@@ -271,3 +271,12 @@ AssetJobResult
 - 后处理：保持帧顺序、统一帧尺寸、记录 bounds、记录 pivot、生成 processed manifest。
 - 导出：`frames/*.svg`、`spritesheet.svg`、`atlas.json`、`run.json`。
 - 缓存：raw / processed / exports 三层，cache key 包含强参数、backend version、postprocess version、export version。
+
+## 10. API-ready / Codex-local 阶段边界
+
+- 用户入口：文本 + 简单参数先编译为 `AssetRecipe`，再编译为 `GenerationPacket`。
+- 当前默认后端：`codex-local`，由 Codex 本地运行，不联网、不需要 API key。
+- 保留后端：`prebuilt`、`mock-ai`、`codex-local` 共享 `GenerateResult` contract。
+- API 占位后端：`api-placeholder` 只校验 `GenerationPacket` 边界，调用时返回“未配置真实 API”的明确错误。
+- 后续真实 API 接入目标：只新增 transport/response adapter，不改 orchestrator、cache、postprocess、export。
+- cache key 已包含 `subject` 与 `sourceText`，用于验证修改文本、风格、尺寸或 backend 后触发 cache miss。

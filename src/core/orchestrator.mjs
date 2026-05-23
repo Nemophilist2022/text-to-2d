@@ -34,7 +34,8 @@ export async function runAssetJob(request, options) {
   } else {
     events.push(request.forceRegenerate ? 'cache.bypassed' : 'cache.miss');
 
-    const generated = await backend.generate({ request });
+    const packet = request.generationPacket;
+    const generated = await backend.generate({ request, packet });
     events.push('backend.generate');
     const rawManifest = await cache.writeRaw(cacheKey, generated);
 
@@ -50,6 +51,8 @@ export async function runAssetJob(request, options) {
     cacheStatus,
     backendId: backend.backendId,
     backendVersion: backend.version,
+    generationPacket: request.generationPacket ?? null,
+    recipe: request.recipe ?? null,
     postprocessVersion: request.postprocessSpec?.version ?? 'none',
     exportVersion: request.exportSpec?.version ?? 'none',
     rawAssetRef,
