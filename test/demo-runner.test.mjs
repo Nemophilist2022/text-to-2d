@@ -38,7 +38,15 @@ test('cli options can select an isolated workspace', () => {
     {
       workspace: 'demo-workspace',
       text: '生成一个像素风骑士角色',
+      backendId: 'codex-local',
       selections: { assetType: 'character', style: 'pixel', size: '64x64' },
     },
+  );
+});
+
+test('cli options can select image api backend without embedding credentials', () => {
+  assert.equal(
+    resolveCliOptions(['node', 'src/demo/demo-runner.mjs', '--backend', 'image-api']).backendId,
+    'image-api',
   );
 });

@@ -6,17 +6,27 @@ import { runAssetJob } from '../core/orchestrator.mjs';
 import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
 import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
 import { createCodexLocalBackend } from '../backends/codex-local-backend.mjs';
+import { createImageApiBackend } from '../backends/image-api-backend.mjs';
 import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
 
-export async function runDemo({ workspace = cwd(), text = '生成一个像素风骑士角色', selections = { assetType: 'character', style: 'pixel', size: '64x64' } } = {}) {
+const DEFAULT_TEXT = '生成一个像素风骑士角色';
+const DEFAULT_SELECTIONS = { assetType: 'character', style: 'pixel', size: '64x64' };
+
+export async function runDemo({
+  workspace = cwd(),
+  text = DEFAULT_TEXT,
+  selections = DEFAULT_SELECTIONS,
+  backendId = 'codex-local',
+} = {}) {
   const recipe = compileAssetRecipe({ text, selections });
-  const request = buildAssetRequestFromRecipe(recipe, { backendId: 'codex-local' });
+  const request = buildAssetRequestFromRecipe(recipe, { backendId });
   const options = {
     workspace,
     backends: {
       prebuilt: createPrebuiltBackend(),
       'mock-ai': createMockAiBackend(),
       'codex-local': createCodexLocalBackend(),
+      'image-api': createImageApiBackend(),
     },
   };
 
@@ -38,14 +48,16 @@ export function resolveCliOptions(argv) {
   const styleFlagIndex = argv.indexOf('--style');
   const assetTypeFlagIndex = argv.indexOf('--asset-type');
   const sizeFlagIndex = argv.indexOf('--size');
+  const backendFlagIndex = argv.indexOf('--backend');
 
   return {
     workspace: workspaceFlagIndex === -1 ? cwd() : argv[workspaceFlagIndex + 1],
-    text: textFlagIndex === -1 ? '生成一个像素风骑士角色' : argv[textFlagIndex + 1],
+    text: textFlagIndex === -1 ? DEFAULT_TEXT : argv[textFlagIndex + 1],
+    backendId: backendFlagIndex === -1 ? 'codex-local' : argv[backendFlagIndex + 1],
     selections: {
-      assetType: assetTypeFlagIndex === -1 ? 'character' : argv[assetTypeFlagIndex + 1],
-      style: styleFlagIndex === -1 ? 'pixel' : argv[styleFlagIndex + 1],
-      size: sizeFlagIndex === -1 ? '64x64' : argv[sizeFlagIndex + 1],
+      assetType: assetTypeFlagIndex === -1 ? DEFAULT_SELECTIONS.assetType : argv[assetTypeFlagIndex + 1],
+      style: styleFlagIndex === -1 ? DEFAULT_SELECTIONS.style : argv[styleFlagIndex + 1],
+      size: sizeFlagIndex === -1 ? DEFAULT_SELECTIONS.size : argv[sizeFlagIndex + 1],
     },
   };
 }

@@ -4,3 +4,6 @@ cache/
 exports/
 demo-workspace/
 .worktrees/
+.env
+.env.*
+!.env.example

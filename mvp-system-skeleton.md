@@ -278,5 +278,7 @@ AssetJobResult
 - 当前默认后端：`codex-local`，由 Codex 本地运行，不联网、不需要 API key。
 - 保留后端：`prebuilt`、`mock-ai`、`codex-local` 共享 `GenerateResult` contract。
 - API 占位后端：`api-placeholder` 只校验 `GenerationPacket` 边界，调用时返回“未配置真实 API”的明确错误。
+- 真实 API 试跑后端：`image-api` 使用 OpenAI-compatible `/v1/images/generations`，配置来自 `.env.local` 或环境变量。
+- 密钥边界：`.env.local` 被 `.gitignore` 忽略；提交只包含 `.env.example`，不得提交真实 `IMAGE_API_KEY`。
 - 后续真实 API 接入目标：只新增 transport/response adapter，不改 orchestrator、cache、postprocess、export。
 - cache key 已包含 `subject` 与 `sourceText`，用于验证修改文本、风格、尺寸或 backend 后触发 cache miss。
