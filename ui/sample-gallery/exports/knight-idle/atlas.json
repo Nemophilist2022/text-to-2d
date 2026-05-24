@@ -1,0 +1,63 @@
+{
+  "assetId": "knight-idle",
+  "variantId": "idle",
+  "image": "spritesheet.svg",
+  "frameSize": {
+    "width": 64,
+    "height": 64
+  },
+  "sheetSize": {
+    "width": 256,
+    "height": 64
+  },
+  "frames": [
+    {
+      "id": "idle_0",
+      "x": 0,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "source": "frames/idle_0.svg"
+    },
+    {
+      "id": "idle_1",
+      "x": 64,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "source": "frames/idle_1.svg"
+    },
+    {
+      "id": "idle_2",
+      "x": 128,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "source": "frames/idle_2.svg"
+    },
+    {
+      "id": "idle_3",
+      "x": 192,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      },
+      "source": "frames/idle_3.svg"
+    }
+  ]
+}

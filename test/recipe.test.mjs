@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 
 import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../src/input/asset-recipe.mjs';
 import { createGenerationPacket } from '../src/generation/generation-packet.mjs';
-import { compilePrompt } from '../src/generation/prompt-compiler.mjs';
+import { compilePrompt, PROMPT_COMPILER_VERSION } from '../src/generation/prompt-compiler.mjs';
+import { visualPresets } from '../src/visual/visual-presets.mjs';
 
 test('text input compiles into a stable asset recipe', () => {
   const recipe = compileAssetRecipe({
@@ -150,7 +151,43 @@ test('prompt compiler builds sections without subject-specific special cases', (
   assert.match(compiled.prompt, /shape-rendering="crispEdges"/);
   assert.match(compiled.prompt, /UI icon/);
   assert.match(compiled.prompt, /pixel art/);
-  assert.equal(compiled.promptSections.length, 4);
+  assert.equal(compiled.promptSections.length, 6);
   assert.match(compiled.negativePrompt, /photorealistic/);
   assert.match(compiled.negativePrompt, /text label/);
+});
+
+test('visual presets carry v2 composition palette readability and svg shape hints', () => {
+  const requiredPresetIds = ['knight_character', 'slime_monster', 'gem_item', 'grass_tile', 'heart_ui_icon'];
+
+  for (const presetId of requiredPresetIds) {
+    const preset = visualPresets.find((candidate) => candidate.id === presetId);
+    assert.ok(preset, `missing preset ${presetId}`);
+    assert.ok(preset.composition.length > 0, `missing composition for ${presetId}`);
+    assert.ok(preset.paletteHints.length > 0, `missing paletteHints for ${presetId}`);
+    assert.ok(preset.readabilityRules.some((rule) => rule.includes('32x32')), `missing 32x32 readability for ${presetId}`);
+    assert.ok(preset.svgShapeHints.length > 0, `missing svgShapeHints for ${presetId}`);
+  }
+});
+
+test('prompt compiler v2 emits composition readability svg and negative sections', () => {
+  const recipe = compileAssetRecipe({
+    text: '\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  });
+  const packet = createGenerationPacket(recipe);
+
+  assert.equal(PROMPT_COMPILER_VERSION, 'prompt-compiler-2');
+  assert.equal(packet.promptCompilerVersion, 'prompt-compiler-2');
+  assert.deepEqual(packet.promptSections.map((section) => section.id), [
+    'global-output',
+    'asset-type',
+    'style',
+    'composition',
+    'visual-preset',
+    'negative-contract',
+  ]);
+  assert.match(packet.prompt, /No full-canvas background/);
+  assert.match(packet.prompt, /centered object/);
+  assert.match(packet.prompt, /SVG shape hints/);
+  assert.match(packet.prompt, /readable at 32x32/);
 });

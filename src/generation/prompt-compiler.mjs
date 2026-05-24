@@ -1,20 +1,22 @@
-﻿export const PROMPT_COMPILER_VERSION = 'prompt-compiler-1';
+﻿export const PROMPT_COMPILER_VERSION = 'prompt-compiler-2';
 
 const globalRules = [
   'Generate a self-contained SVG 2D game asset.',
   'Use transparent background.',
+  'No full-canvas background or opaque backdrop.',
   'Fit the requested frame size exactly.',
   'Set shape-rendering="crispEdges" on the SVG root.',
+  'Use viewBox matching the requested size.',
 ];
 
-const globalForbidden = ['photorealistic', 'blur', 'low contrast', 'cropped', 'inconsistent frames', 'busy background'];
+const globalForbidden = ['photorealistic', 'blur', 'low contrast', 'cropped', 'inconsistent frames', 'busy background', 'full-canvas background'];
 
 const assetTypeRules = {
-  character: ['Game character sprite.', 'Readable body/head silhouette.', 'Keep animation frames consistent.'],
-  monster: ['Game monster sprite.', 'Readable creature silhouette.', 'Express simple personality through shape.'],
-  item: ['Game item pickup.', 'Center the object with a strong item silhouette.', 'No scenery or character body.'],
-  'map-tile': ['Map tile asset.', 'Fill the tile footprint.', 'Use tileable edge-safe composition.'],
-  'ui-icon': ['UI icon asset.', 'Simple high-contrast icon shape.', 'Readable in a game HUD.'],
+  character: ['Game character sprite.', 'Readable body/head silhouette.', 'Keep animation frames consistent.', 'Feet or base should sit near bottom center.'],
+  monster: ['Game monster sprite.', 'Readable creature silhouette.', 'Express simple personality through shape.', 'Keep the creature as the only main subject.'],
+  item: ['Game item pickup.', 'Use a centered object composition.', 'Center the object with a strong item silhouette.', 'No scenery or character body.'],
+  'map-tile': ['Map tile asset.', 'Use tile-filling rules instead of centered object rules.', 'Fill the tile footprint with edge-safe patterns.', 'Avoid single floating props.'],
+  'ui-icon': ['UI icon asset.', 'Use a centered icon composition.', 'Simple high-contrast icon shape.', 'Readable in a game HUD.'],
 };
 
 const assetTypeForbidden = {
@@ -26,11 +28,11 @@ const assetTypeForbidden = {
 };
 
 const styleRules = {
-  pixel: ['pixel art', 'low-resolution readable clusters', 'limited palette'],
-  chibi: ['chibi proportions', 'rounded cute shapes'],
-  dark: ['dark fantasy style', 'high contrast silhouette'],
-  chinese: ['Chinese fantasy style', 'ornamental but readable details'],
-  'sci-fi': ['science fiction style', 'clean luminous accents'],
+  pixel: ['pixel art', 'low-resolution readable clusters', 'limited palette', 'hard edges, no soft painterly gradients'],
+  chibi: ['chibi proportions', 'rounded cute shapes', 'simple readable features'],
+  dark: ['dark fantasy style', 'high contrast silhouette', 'controlled shadow shapes'],
+  chinese: ['Chinese fantasy style', 'ornamental but readable details', 'avoid tiny unreadable linework'],
+  'sci-fi': ['science fiction style', 'clean luminous accents', 'simple mechanical silhouettes'],
 };
 
 const styleForbidden = {
@@ -43,9 +45,25 @@ const styleForbidden = {
 
 export function compilePrompt({ concept, preset, outputContract }) {
   const size = `${concept.size.width}x${concept.size.height}`;
+  const normalizedPreset = {
+    composition: [],
+    paletteHints: [],
+    readabilityRules: [],
+    svgShapeHints: [],
+    silhouette: [],
+    requiredDetails: [],
+    forbidden: [],
+    ...preset,
+  };
+  const negativeRules = unique([
+    ...globalForbidden,
+    ...(assetTypeForbidden[concept.assetType] ?? []),
+    ...(styleForbidden[concept.style] ?? []),
+    ...normalizedPreset.forbidden,
+  ]);
   const promptSections = [
     {
-      id: 'global',
+      id: 'global-output',
       rules: [...globalRules, `Target size: ${size}.`, `Output media type: ${outputContract.mediaType}.`],
     },
     {
@@ -57,26 +75,34 @@ export function compilePrompt({ concept, preset, outputContract }) {
       rules: styleRules[concept.style] ?? styleRules.pixel,
     },
     {
+      id: 'composition',
+      rules: [
+        'Composition contract:',
+        ...normalizedPreset.composition,
+        ...normalizedPreset.paletteHints.map((hint) => `Palette hint: ${hint}.`),
+        ...normalizedPreset.readabilityRules,
+      ],
+    },
+    {
       id: 'visual-preset',
       rules: [
         `Subject: ${concept.subject}.`,
         `Visual archetype: ${concept.visualArchetype}.`,
         `${String(concept.visualArchetype ?? concept.subject).replaceAll('_', ' ')} ${concept.subject}.`,
-        ...preset.silhouette,
-        ...preset.requiredDetails,
-        ...preset.forbidden.map((item) => `No ${item}.`),
+        ...normalizedPreset.silhouette,
+        ...normalizedPreset.requiredDetails,
+        `SVG shape hints: ${normalizedPreset.svgShapeHints.join('; ')}.`,
       ],
+    },
+    {
+      id: 'negative-contract',
+      rules: negativeRules.map((item) => `No ${item}.`),
     },
   ];
 
   return {
     prompt: promptSections.flatMap((section) => section.rules).join(' '),
-    negativePrompt: unique([
-      ...globalForbidden,
-      ...(assetTypeForbidden[concept.assetType] ?? []),
-      ...(styleForbidden[concept.style] ?? []),
-      ...preset.forbidden,
-    ]).join(', '),
+    negativePrompt: negativeRules.join(', '),
     promptSections,
   };
 }

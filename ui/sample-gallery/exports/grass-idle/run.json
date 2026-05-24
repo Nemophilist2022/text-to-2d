@@ -1,0 +1,333 @@
+{
+  "assetId": "grass-idle",
+  "variantId": "idle",
+  "cacheKey": "85db24799ff72aac",
+  "cacheStatus": "miss",
+  "backendId": "codex-local",
+  "backendVersion": "mvp-api-ready-1",
+  "generationPacket": {
+    "requestId": "66a1d42498247e07",
+    "assetId": "grass-idle",
+    "assetType": "map-tile",
+    "subject": "grass",
+    "presetId": "grass_tile",
+    "concept": {
+      "assetType": "map-tile",
+      "subject": "grass",
+      "visualArchetype": "terrain_tile",
+      "presetId": "grass_tile",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "map-tile:pixel:32x32:grass_tile:草地地图块"
+    },
+    "visualPreset": "grass_tile",
+    "visualArchetype": "terrain_tile",
+    "silhouette": [
+      "full tile footprint",
+      "seamless square terrain patch"
+    ],
+    "requiredDetails": [
+      "grass texture clusters",
+      "tileable edges",
+      "transparent or edge-safe background"
+    ],
+    "forbidden": [
+      "character",
+      "weapon",
+      "ui button",
+      "single floating item"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      },
+      {
+        "feature": "tileCoverage",
+        "severity": "warning"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. Map tile asset. Use tile-filling rules instead of centered object rules. Fill the tile footprint with edge-safe patterns. Avoid single floating props. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: tile-filling terrain surface edge-safe pattern no centered pickup object Palette hint: base grass green. Palette hint: two darker grass clusters. Palette hint: one yellow-green highlight cluster. readable at 32x32 as a grass tile readable at 64x64 with repeated clusters readable at 128x128 without noisy micro-detail Subject: grass. Visual archetype: terrain_tile. terrain tile grass. full tile footprint seamless square terrain patch grass texture clusters tileable edges transparent or edge-safe background SVG shape hints: edge-safe small rect or path grass clusters; multiple short blades; no full-canvas opaque background block. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No floating object. No character sprite. No anti-aliased painterly render. No photo texture. No character. No weapon. No ui button. No single floating item.",
+    "negativePrompt": "photorealistic, blur, low contrast, cropped, inconsistent frames, busy background, full-canvas background, floating object, character sprite, anti-aliased painterly render, photo texture, character, weapon, ui button, single floating item",
+    "promptSections": [
+      {
+        "id": "global-output",
+        "rules": [
+          "Generate a self-contained SVG 2D game asset.",
+          "Use transparent background.",
+          "No full-canvas background or opaque backdrop.",
+          "Fit the requested frame size exactly.",
+          "Set shape-rendering=\"crispEdges\" on the SVG root.",
+          "Use viewBox matching the requested size.",
+          "Target size: 32x32.",
+          "Output media type: image/svg+xml."
+        ]
+      },
+      {
+        "id": "asset-type",
+        "rules": [
+          "Map tile asset.",
+          "Use tile-filling rules instead of centered object rules.",
+          "Fill the tile footprint with edge-safe patterns.",
+          "Avoid single floating props."
+        ]
+      },
+      {
+        "id": "style",
+        "rules": [
+          "pixel art",
+          "low-resolution readable clusters",
+          "limited palette",
+          "hard edges, no soft painterly gradients"
+        ]
+      },
+      {
+        "id": "composition",
+        "rules": [
+          "Composition contract:",
+          "tile-filling terrain surface",
+          "edge-safe pattern",
+          "no centered pickup object",
+          "Palette hint: base grass green.",
+          "Palette hint: two darker grass clusters.",
+          "Palette hint: one yellow-green highlight cluster.",
+          "readable at 32x32 as a grass tile",
+          "readable at 64x64 with repeated clusters",
+          "readable at 128x128 without noisy micro-detail"
+        ]
+      },
+      {
+        "id": "visual-preset",
+        "rules": [
+          "Subject: grass.",
+          "Visual archetype: terrain_tile.",
+          "terrain tile grass.",
+          "full tile footprint",
+          "seamless square terrain patch",
+          "grass texture clusters",
+          "tileable edges",
+          "transparent or edge-safe background",
+          "SVG shape hints: edge-safe small rect or path grass clusters; multiple short blades; no full-canvas opaque background block."
+        ]
+      },
+      {
+        "id": "negative-contract",
+        "rules": [
+          "No photorealistic.",
+          "No blur.",
+          "No low contrast.",
+          "No cropped.",
+          "No inconsistent frames.",
+          "No busy background.",
+          "No full-canvas background.",
+          "No floating object.",
+          "No character sprite.",
+          "No anti-aliased painterly render.",
+          "No photo texture.",
+          "No character.",
+          "No weapon.",
+          "No ui button.",
+          "No single floating item."
+        ]
+      }
+    ],
+    "promptCompilerVersion": "prompt-compiler-2",
+    "qualityGateVersion": "quality-gate-1",
+    "qualityContract": {
+      "version": "quality-gate-1",
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        },
+        {
+          "feature": "tileCoverage",
+          "severity": "warning"
+        }
+      ],
+      "forbidden": [
+        "character",
+        "weapon",
+        "ui button",
+        "single floating item"
+      ]
+    },
+    "outputContract": {
+      "mediaType": "image/svg+xml",
+      "transparentBackground": true,
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "frameSize": {
+        "width": 32,
+        "height": 32
+      },
+      "layout": "horizontal-spritesheet"
+    }
+  },
+  "recipe": {
+    "text": "草地地图块",
+    "concept": {
+      "assetType": "map-tile",
+      "subject": "grass",
+      "visualArchetype": "terrain_tile",
+      "presetId": "grass_tile",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "map-tile:pixel:32x32:grass_tile:草地地图块"
+    },
+    "assetId": "grass-idle",
+    "assetType": "map-tile",
+    "subject": "grass",
+    "presetId": "grass_tile",
+    "visualPreset": {
+      "composition": [
+        "tile-filling terrain surface",
+        "edge-safe pattern",
+        "no centered pickup object"
+      ],
+      "paletteHints": [
+        "base grass green",
+        "two darker grass clusters",
+        "one yellow-green highlight cluster"
+      ],
+      "readabilityRules": [
+        "readable at 32x32 as a grass tile",
+        "readable at 64x64 with repeated clusters",
+        "readable at 128x128 without noisy micro-detail"
+      ],
+      "svgShapeHints": [
+        "edge-safe small rect or path grass clusters",
+        "multiple short blades",
+        "no full-canvas opaque background block"
+      ],
+      "qualityRules": [],
+      "id": "grass_tile",
+      "assetType": "map-tile",
+      "subjects": [
+        "grass"
+      ],
+      "visualArchetype": "terrain_tile",
+      "aliases": [
+        "grass",
+        "grass tile",
+        "草地",
+        "地块",
+        "地图块"
+      ],
+      "silhouette": [
+        "full tile footprint",
+        "seamless square terrain patch"
+      ],
+      "requiredDetails": [
+        "grass texture clusters",
+        "tileable edges",
+        "transparent or edge-safe background"
+      ],
+      "forbidden": [
+        "character",
+        "weapon",
+        "ui button",
+        "single floating item"
+      ],
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        },
+        {
+          "feature": "tileCoverage",
+          "severity": "warning"
+        }
+      ]
+    },
+    "visualArchetype": "terrain_tile",
+    "silhouette": [
+      "full tile footprint",
+      "seamless square terrain patch"
+    ],
+    "requiredDetails": [
+      "grass texture clusters",
+      "tileable edges",
+      "transparent or edge-safe background"
+    ],
+    "forbidden": [
+      "character",
+      "weapon",
+      "ui button",
+      "single floating item"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      },
+      {
+        "feature": "tileCoverage",
+        "severity": "warning"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "animation": "idle",
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "direction": "front",
+    "palette": "blue",
+    "seed": "map-tile:pixel:32x32:grass_tile:草地地图块"
+  },
+  "postprocessVersion": "mvp-api-ready-1",
+  "exportVersion": "mvp-api-ready-1",
+  "rawAssetRef": "ui\\sample-gallery\\cache\\raw\\85db24799ff72aac",
+  "processedAssetRef": "ui\\sample-gallery\\cache\\processed\\85db24799ff72aac",
+  "outputFiles": {
+    "frames": [
+      "ui\\sample-gallery\\exports\\grass-idle\\frames\\idle_0.svg"
+    ],
+    "spritesheet": "ui\\sample-gallery\\exports\\grass-idle\\spritesheet.svg",
+    "atlas": "ui\\sample-gallery\\exports\\grass-idle\\atlas.json",
+    "run": "ui\\sample-gallery\\exports\\grass-idle\\run.json"
+  },
+  "qualityReports": [],
+  "events": [
+    "cache.miss",
+    "backend.generate",
+    "postprocess.frames",
+    "export.write"
+  ]
+}

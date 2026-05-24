@@ -1,0 +1,327 @@
+{
+  "assetId": "heart-idle",
+  "variantId": "idle",
+  "cacheKey": "2860eb1034028a9b",
+  "cacheStatus": "miss",
+  "backendId": "codex-local",
+  "backendVersion": "mvp-api-ready-1",
+  "generationPacket": {
+    "requestId": "35acd39dc5a41698",
+    "assetId": "heart-idle",
+    "assetType": "ui-icon",
+    "subject": "heart",
+    "presetId": "heart_ui_icon",
+    "concept": {
+      "assetType": "ui-icon",
+      "subject": "heart",
+      "visualArchetype": "heart_icon",
+      "presetId": "heart_ui_icon",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "ui-icon:pixel:32x32:heart_ui_icon:红心 UI 图标"
+    },
+    "visualPreset": "heart_ui_icon",
+    "visualArchetype": "heart_icon",
+    "silhouette": [
+      "simple heart silhouette",
+      "readable UI icon at 32x32"
+    ],
+    "requiredDetails": [
+      "clear red heart shape",
+      "small highlight",
+      "transparent background"
+    ],
+    "forbidden": [
+      "text label",
+      "complex scene",
+      "photorealistic organ"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "path",
+        "severity": "warning"
+      },
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. UI icon asset. Use a centered icon composition. Simple high-contrast icon shape. Readable in a game HUD. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: centered UI icon large silhouette occupying most of frame transparent padding around icon Palette hint: red primary fill. Palette hint: dark red lower shadow. Palette hint: small pink or white upper-left highlight. readable at 32x32 as a heart readable at 64x64 with highlight and shadow readable at 128x128 without text labels Subject: heart. Visual archetype: heart_icon. heart icon heart. simple heart silhouette readable UI icon at 32x32 clear red heart shape small highlight transparent background SVG shape hints: single path heart silhouette; smaller path highlight; optional dark outline. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No text label. No complex scene. No anti-aliased painterly render. No photo texture. No photorealistic organ.",
+    "negativePrompt": "photorealistic, blur, low contrast, cropped, inconsistent frames, busy background, full-canvas background, text label, complex scene, anti-aliased painterly render, photo texture, photorealistic organ",
+    "promptSections": [
+      {
+        "id": "global-output",
+        "rules": [
+          "Generate a self-contained SVG 2D game asset.",
+          "Use transparent background.",
+          "No full-canvas background or opaque backdrop.",
+          "Fit the requested frame size exactly.",
+          "Set shape-rendering=\"crispEdges\" on the SVG root.",
+          "Use viewBox matching the requested size.",
+          "Target size: 32x32.",
+          "Output media type: image/svg+xml."
+        ]
+      },
+      {
+        "id": "asset-type",
+        "rules": [
+          "UI icon asset.",
+          "Use a centered icon composition.",
+          "Simple high-contrast icon shape.",
+          "Readable in a game HUD."
+        ]
+      },
+      {
+        "id": "style",
+        "rules": [
+          "pixel art",
+          "low-resolution readable clusters",
+          "limited palette",
+          "hard edges, no soft painterly gradients"
+        ]
+      },
+      {
+        "id": "composition",
+        "rules": [
+          "Composition contract:",
+          "centered UI icon",
+          "large silhouette occupying most of frame",
+          "transparent padding around icon",
+          "Palette hint: red primary fill.",
+          "Palette hint: dark red lower shadow.",
+          "Palette hint: small pink or white upper-left highlight.",
+          "readable at 32x32 as a heart",
+          "readable at 64x64 with highlight and shadow",
+          "readable at 128x128 without text labels"
+        ]
+      },
+      {
+        "id": "visual-preset",
+        "rules": [
+          "Subject: heart.",
+          "Visual archetype: heart_icon.",
+          "heart icon heart.",
+          "simple heart silhouette",
+          "readable UI icon at 32x32",
+          "clear red heart shape",
+          "small highlight",
+          "transparent background",
+          "SVG shape hints: single path heart silhouette; smaller path highlight; optional dark outline."
+        ]
+      },
+      {
+        "id": "negative-contract",
+        "rules": [
+          "No photorealistic.",
+          "No blur.",
+          "No low contrast.",
+          "No cropped.",
+          "No inconsistent frames.",
+          "No busy background.",
+          "No full-canvas background.",
+          "No text label.",
+          "No complex scene.",
+          "No anti-aliased painterly render.",
+          "No photo texture.",
+          "No photorealistic organ."
+        ]
+      }
+    ],
+    "promptCompilerVersion": "prompt-compiler-2",
+    "qualityGateVersion": "quality-gate-1",
+    "qualityContract": {
+      "version": "quality-gate-1",
+      "requiredSvgFeatures": [
+        {
+          "feature": "path",
+          "severity": "warning"
+        },
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ],
+      "forbidden": [
+        "text label",
+        "complex scene",
+        "photorealistic organ"
+      ]
+    },
+    "outputContract": {
+      "mediaType": "image/svg+xml",
+      "transparentBackground": true,
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "frameSize": {
+        "width": 32,
+        "height": 32
+      },
+      "layout": "horizontal-spritesheet"
+    }
+  },
+  "recipe": {
+    "text": "红心 UI 图标",
+    "concept": {
+      "assetType": "ui-icon",
+      "subject": "heart",
+      "visualArchetype": "heart_icon",
+      "presetId": "heart_ui_icon",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "ui-icon:pixel:32x32:heart_ui_icon:红心 UI 图标"
+    },
+    "assetId": "heart-idle",
+    "assetType": "ui-icon",
+    "subject": "heart",
+    "presetId": "heart_ui_icon",
+    "visualPreset": {
+      "composition": [
+        "centered UI icon",
+        "large silhouette occupying most of frame",
+        "transparent padding around icon"
+      ],
+      "paletteHints": [
+        "red primary fill",
+        "dark red lower shadow",
+        "small pink or white upper-left highlight"
+      ],
+      "readabilityRules": [
+        "readable at 32x32 as a heart",
+        "readable at 64x64 with highlight and shadow",
+        "readable at 128x128 without text labels"
+      ],
+      "svgShapeHints": [
+        "single path heart silhouette",
+        "smaller path highlight",
+        "optional dark outline"
+      ],
+      "qualityRules": [],
+      "id": "heart_ui_icon",
+      "assetType": "ui-icon",
+      "subjects": [
+        "heart"
+      ],
+      "visualArchetype": "heart_icon",
+      "aliases": [
+        "heart",
+        "hp",
+        "health",
+        "红心",
+        "爱心",
+        "生命"
+      ],
+      "silhouette": [
+        "simple heart silhouette",
+        "readable UI icon at 32x32"
+      ],
+      "requiredDetails": [
+        "clear red heart shape",
+        "small highlight",
+        "transparent background"
+      ],
+      "forbidden": [
+        "text label",
+        "complex scene",
+        "photorealistic organ"
+      ],
+      "requiredSvgFeatures": [
+        {
+          "feature": "path",
+          "severity": "warning"
+        },
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ]
+    },
+    "visualArchetype": "heart_icon",
+    "silhouette": [
+      "simple heart silhouette",
+      "readable UI icon at 32x32"
+    ],
+    "requiredDetails": [
+      "clear red heart shape",
+      "small highlight",
+      "transparent background"
+    ],
+    "forbidden": [
+      "text label",
+      "complex scene",
+      "photorealistic organ"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "path",
+        "severity": "warning"
+      },
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "animation": "idle",
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "direction": "front",
+    "palette": "blue",
+    "seed": "ui-icon:pixel:32x32:heart_ui_icon:红心 UI 图标"
+  },
+  "postprocessVersion": "mvp-api-ready-1",
+  "exportVersion": "mvp-api-ready-1",
+  "rawAssetRef": "ui\\sample-gallery\\cache\\raw\\2860eb1034028a9b",
+  "processedAssetRef": "ui\\sample-gallery\\cache\\processed\\2860eb1034028a9b",
+  "outputFiles": {
+    "frames": [
+      "ui\\sample-gallery\\exports\\heart-idle\\frames\\idle_0.svg"
+    ],
+    "spritesheet": "ui\\sample-gallery\\exports\\heart-idle\\spritesheet.svg",
+    "atlas": "ui\\sample-gallery\\exports\\heart-idle\\atlas.json",
+    "run": "ui\\sample-gallery\\exports\\heart-idle\\run.json"
+  },
+  "qualityReports": [],
+  "events": [
+    "cache.miss",
+    "backend.generate",
+    "postprocess.frames",
+    "export.write"
+  ]
+}

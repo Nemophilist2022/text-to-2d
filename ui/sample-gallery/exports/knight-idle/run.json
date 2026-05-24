@@ -1,0 +1,330 @@
+{
+  "assetId": "knight-idle",
+  "variantId": "idle",
+  "cacheKey": "a837287d28fa093c",
+  "cacheStatus": "miss",
+  "backendId": "codex-local",
+  "backendVersion": "mvp-api-ready-1",
+  "generationPacket": {
+    "requestId": "5db02d80a23de525",
+    "assetId": "knight-idle",
+    "assetType": "character",
+    "subject": "knight",
+    "presetId": "knight_character",
+    "concept": {
+      "assetType": "character",
+      "subject": "knight",
+      "visualArchetype": "armored_character",
+      "presetId": "knight_character",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "animation": "idle",
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "character:pixel:64x64:knight_character:生成一个像素风骑士角色"
+    },
+    "visualPreset": "knight_character",
+    "visualArchetype": "armored_character",
+    "silhouette": [
+      "helmeted knight silhouette",
+      "compact readable RPG character shape"
+    ],
+    "requiredDetails": [
+      "helmet",
+      "small armor body",
+      "weapon or shield hint",
+      "transparent background"
+    ],
+    "forbidden": [
+      "modern clothing",
+      "photorealistic render",
+      "background scene"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "frameCount": 4,
+    "frameLabels": [
+      "idle_0",
+      "idle_1",
+      "idle_2",
+      "idle_3"
+    ],
+    "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 64x64. Output media type: image/svg+xml. Game character sprite. Readable body/head silhouette. Keep animation frames consistent. Feet or base should sit near bottom center. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: front-facing full-body sprite feet anchored near bottom center centered object inside frame with no crop Palette hint: steel blue armor. Palette hint: bright face/visor contrast. Palette hint: one readable accent color for weapon or shield. readable at 32x32 through helmet/body split readable at 64x64 with weapon silhouette readable at 128x128 with armor detail but no clutter Subject: knight. Visual archetype: armored_character. armored character knight. helmeted knight silhouette compact readable RPG character shape helmet small armor body weapon or shield hint transparent background SVG shape hints: circle or rect helmet; rect body armor; path sword or shield silhouette. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No landscape-only image. No anti-aliased painterly render. No photo texture. No modern clothing. No photorealistic render. No background scene.",
+    "negativePrompt": "photorealistic, blur, low contrast, cropped, inconsistent frames, busy background, full-canvas background, landscape-only image, anti-aliased painterly render, photo texture, modern clothing, photorealistic render, background scene",
+    "promptSections": [
+      {
+        "id": "global-output",
+        "rules": [
+          "Generate a self-contained SVG 2D game asset.",
+          "Use transparent background.",
+          "No full-canvas background or opaque backdrop.",
+          "Fit the requested frame size exactly.",
+          "Set shape-rendering=\"crispEdges\" on the SVG root.",
+          "Use viewBox matching the requested size.",
+          "Target size: 64x64.",
+          "Output media type: image/svg+xml."
+        ]
+      },
+      {
+        "id": "asset-type",
+        "rules": [
+          "Game character sprite.",
+          "Readable body/head silhouette.",
+          "Keep animation frames consistent.",
+          "Feet or base should sit near bottom center."
+        ]
+      },
+      {
+        "id": "style",
+        "rules": [
+          "pixel art",
+          "low-resolution readable clusters",
+          "limited palette",
+          "hard edges, no soft painterly gradients"
+        ]
+      },
+      {
+        "id": "composition",
+        "rules": [
+          "Composition contract:",
+          "front-facing full-body sprite",
+          "feet anchored near bottom center",
+          "centered object inside frame with no crop",
+          "Palette hint: steel blue armor.",
+          "Palette hint: bright face/visor contrast.",
+          "Palette hint: one readable accent color for weapon or shield.",
+          "readable at 32x32 through helmet/body split",
+          "readable at 64x64 with weapon silhouette",
+          "readable at 128x128 with armor detail but no clutter"
+        ]
+      },
+      {
+        "id": "visual-preset",
+        "rules": [
+          "Subject: knight.",
+          "Visual archetype: armored_character.",
+          "armored character knight.",
+          "helmeted knight silhouette",
+          "compact readable RPG character shape",
+          "helmet",
+          "small armor body",
+          "weapon or shield hint",
+          "transparent background",
+          "SVG shape hints: circle or rect helmet; rect body armor; path sword or shield silhouette."
+        ]
+      },
+      {
+        "id": "negative-contract",
+        "rules": [
+          "No photorealistic.",
+          "No blur.",
+          "No low contrast.",
+          "No cropped.",
+          "No inconsistent frames.",
+          "No busy background.",
+          "No full-canvas background.",
+          "No landscape-only image.",
+          "No anti-aliased painterly render.",
+          "No photo texture.",
+          "No modern clothing.",
+          "No photorealistic render.",
+          "No background scene."
+        ]
+      }
+    ],
+    "promptCompilerVersion": "prompt-compiler-2",
+    "qualityGateVersion": "quality-gate-1",
+    "qualityContract": {
+      "version": "quality-gate-1",
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ],
+      "forbidden": [
+        "modern clothing",
+        "photorealistic render",
+        "background scene"
+      ]
+    },
+    "outputContract": {
+      "mediaType": "image/svg+xml",
+      "transparentBackground": true,
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "frameSize": {
+        "width": 64,
+        "height": 64
+      },
+      "layout": "horizontal-spritesheet"
+    }
+  },
+  "recipe": {
+    "text": "生成一个像素风骑士角色",
+    "concept": {
+      "assetType": "character",
+      "subject": "knight",
+      "visualArchetype": "armored_character",
+      "presetId": "knight_character",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "animation": "idle",
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "character:pixel:64x64:knight_character:生成一个像素风骑士角色"
+    },
+    "assetId": "knight-idle",
+    "assetType": "character",
+    "subject": "knight",
+    "presetId": "knight_character",
+    "visualPreset": {
+      "composition": [
+        "front-facing full-body sprite",
+        "feet anchored near bottom center",
+        "centered object inside frame with no crop"
+      ],
+      "paletteHints": [
+        "steel blue armor",
+        "bright face/visor contrast",
+        "one readable accent color for weapon or shield"
+      ],
+      "readabilityRules": [
+        "readable at 32x32 through helmet/body split",
+        "readable at 64x64 with weapon silhouette",
+        "readable at 128x128 with armor detail but no clutter"
+      ],
+      "svgShapeHints": [
+        "circle or rect helmet",
+        "rect body armor",
+        "path sword or shield silhouette"
+      ],
+      "qualityRules": [],
+      "id": "knight_character",
+      "assetType": "character",
+      "subjects": [
+        "knight"
+      ],
+      "visualArchetype": "armored_character",
+      "aliases": [
+        "knight",
+        "骑士"
+      ],
+      "silhouette": [
+        "helmeted knight silhouette",
+        "compact readable RPG character shape"
+      ],
+      "requiredDetails": [
+        "helmet",
+        "small armor body",
+        "weapon or shield hint",
+        "transparent background"
+      ],
+      "forbidden": [
+        "modern clothing",
+        "photorealistic render",
+        "background scene"
+      ],
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ]
+    },
+    "visualArchetype": "armored_character",
+    "silhouette": [
+      "helmeted knight silhouette",
+      "compact readable RPG character shape"
+    ],
+    "requiredDetails": [
+      "helmet",
+      "small armor body",
+      "weapon or shield hint",
+      "transparent background"
+    ],
+    "forbidden": [
+      "modern clothing",
+      "photorealistic render",
+      "background scene"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "animation": "idle",
+    "frameCount": 4,
+    "frameLabels": [
+      "idle_0",
+      "idle_1",
+      "idle_2",
+      "idle_3"
+    ],
+    "direction": "front",
+    "palette": "blue",
+    "seed": "character:pixel:64x64:knight_character:生成一个像素风骑士角色"
+  },
+  "postprocessVersion": "mvp-api-ready-1",
+  "exportVersion": "mvp-api-ready-1",
+  "rawAssetRef": "ui\\sample-gallery\\cache\\raw\\a837287d28fa093c",
+  "processedAssetRef": "ui\\sample-gallery\\cache\\processed\\a837287d28fa093c",
+  "outputFiles": {
+    "frames": [
+      "ui\\sample-gallery\\exports\\knight-idle\\frames\\idle_0.svg",
+      "ui\\sample-gallery\\exports\\knight-idle\\frames\\idle_1.svg",
+      "ui\\sample-gallery\\exports\\knight-idle\\frames\\idle_2.svg",
+      "ui\\sample-gallery\\exports\\knight-idle\\frames\\idle_3.svg"
+    ],
+    "spritesheet": "ui\\sample-gallery\\exports\\knight-idle\\spritesheet.svg",
+    "atlas": "ui\\sample-gallery\\exports\\knight-idle\\atlas.json",
+    "run": "ui\\sample-gallery\\exports\\knight-idle\\run.json"
+  },
+  "qualityReports": [],
+  "events": [
+    "cache.miss",
+    "backend.generate",
+    "postprocess.frames",
+    "export.write"
+  ]
+}

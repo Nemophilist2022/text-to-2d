@@ -1,9 +1,10 @@
-cache/
+/cache/
 !src/cache/
 !src/cache/**
-exports/
-demo-workspace/
+/exports/
+demo-workspace*/
 .worktrees/
 .env
 .env.*
 !.env.example
+ui/sample-gallery/cache/

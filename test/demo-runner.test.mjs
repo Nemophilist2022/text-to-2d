@@ -9,7 +9,7 @@ import { isDirectRun, resolveCliOptions, runDemo } from '../src/demo/demo-runner
 test('demo runner executes miss then hit and returns exported files', async () => {
   const workspace = await mkdtemp(join(tmpdir(), 'asset-demo-'));
   try {
-    const result = await runDemo({ workspace });
+    const result = await runDemo({ workspace, backendId: 'codex-local' });
 
     assert.equal(result.first.cacheStatus, 'miss');
     assert.equal(result.second.cacheStatus, 'hit');
@@ -38,10 +38,17 @@ test('cli options can select an isolated workspace', () => {
     {
       workspace: 'demo-workspace',
       text: '生成一个像素风骑士角色',
-      backendId: 'codex-local',
+      backendId: 'chat-svg',
       skipBackendCompare: false,
       selections: { assetType: 'character', style: 'pixel', size: '64x64' },
     },
+  );
+});
+
+test('cli defaults to chat svg backend', () => {
+  assert.equal(
+    resolveCliOptions(['node', 'src/demo/demo-runner.mjs']).backendId,
+    'chat-svg',
   );
 });
 

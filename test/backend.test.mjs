@@ -66,6 +66,26 @@ test('codex local backend consumes generation packet and returns frame contract'
   assert.match(result.frames[0].content, /knight/);
 });
 
+test('codex local backend renders subject-specific clean demo shapes', async () => {
+  const gemPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  }));
+  const heartPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u7ea2\u5fc3 UI \u56fe\u6807',
+    selections: { assetType: 'ui-icon', style: 'pixel', size: '32x32' },
+  }));
+
+  const backend = createCodexLocalBackend();
+  const gemResult = await backend.generate({ request, packet: gemPacket });
+  const heartResult = await backend.generate({ request, packet: heartPacket });
+
+  assert.match(gemResult.frames[0].content, /<polygon/);
+  assert.match(gemResult.frames[0].content, /faceted-gem/);
+  assert.match(heartResult.frames[0].content, /<path/);
+  assert.doesNotMatch(heartResult.frames[0].content, /<text/);
+});
+
 test('api backend placeholder refuses real generation with clear configuration error', async () => {
   await assert.rejects(
     () => createApiBackendPlaceholder().generate({ request, packet }),
@@ -326,6 +346,34 @@ test('quality gate returns hard errors and non-blocking warnings by preset rule'
   assert.match(solidBackground.errors.join('\n'), /full-canvas solid background/);
   assert.equal(weakHeart.passed, true);
   assert.match(weakHeart.warnings.join('\n'), /recommended svg feature missing: path/);
+});
+
+test('quality gate explains missing viewBox shape and tile coverage problems', () => {
+  const itemPacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u50cf\u7d20\u98ce\u5b9d\u77f3\u9053\u5177',
+    selections: { assetType: 'item', style: 'pixel', size: '32x32' },
+  }));
+  const tilePacket = createGenerationPacket(compileAssetRecipe({
+    text: '\u8349\u5730\u5730\u56fe\u5757',
+    selections: { assetType: 'map-tile', style: 'pixel', size: '32x32' },
+  }));
+
+  const itemReport = validateSvgQuality({
+    svg: '<svg width="32" height="32"><rect width="100%" height="100%" fill="none"/></svg>',
+    packet: itemPacket,
+    frameId: 'idle_0',
+  });
+  const tileReport = validateSvgQuality({
+    svg: '<svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="4" fill="#22c55e"/></svg>',
+    packet: tilePacket,
+    frameId: 'idle_0',
+  });
+
+  assert.equal(itemReport.passed, false);
+  assert.match(itemReport.errors.join('\n'), /missing viewBox/);
+  assert.match(itemReport.errors.join('\n'), /required visible subject shape/);
+  assert.equal(tileReport.passed, true);
+  assert.match(tileReport.warnings.join('\n'), /tile coverage shape not detected/);
 });
 
 test('chat svg backend fails clearly when api key is missing', async () => {

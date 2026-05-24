@@ -1,0 +1,325 @@
+{
+  "assetId": "slime-idle",
+  "variantId": "idle",
+  "cacheKey": "98643056ade5ba2c",
+  "cacheStatus": "miss",
+  "backendId": "codex-local",
+  "backendVersion": "mvp-api-ready-1",
+  "generationPacket": {
+    "requestId": "ed077cb805d3e705",
+    "assetId": "slime-idle",
+    "assetType": "monster",
+    "subject": "slime",
+    "presetId": "slime_monster",
+    "concept": {
+      "assetType": "monster",
+      "subject": "slime",
+      "visualArchetype": "blob_monster",
+      "presetId": "slime_monster",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "animation": "idle",
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "monster:pixel:64x64:slime_monster:生成一个像素风史莱姆怪物"
+    },
+    "visualPreset": "slime_monster",
+    "visualArchetype": "blob_monster",
+    "silhouette": [
+      "rounded blob silhouette",
+      "squashable monster shape"
+    ],
+    "requiredDetails": [
+      "simple face",
+      "soft highlight",
+      "transparent background"
+    ],
+    "forbidden": [
+      "humanoid armor",
+      "hard mechanical parts",
+      "busy background"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "frameCount": 4,
+    "frameLabels": [
+      "idle_0",
+      "idle_1",
+      "idle_2",
+      "idle_3"
+    ],
+    "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 64x64. Output media type: image/svg+xml. Game monster sprite. Readable creature silhouette. Express simple personality through shape. Keep the creature as the only main subject. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: single centered creature body sits on lower third no props competing with face Palette hint: green or blue translucent body. Palette hint: darker lower rim. Palette hint: small white highlight. readable at 32x32 by blob outline and two eyes readable at 64x64 with soft highlight readable at 128x128 with simple volume Subject: slime. Visual archetype: blob_monster. blob monster slime. rounded blob silhouette squashable monster shape simple face soft highlight transparent background SVG shape hints: ellipse body; circle eyes; small ellipse highlight. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No friendly human character. No anti-aliased painterly render. No photo texture. No humanoid armor. No hard mechanical parts.",
+    "negativePrompt": "photorealistic, blur, low contrast, cropped, inconsistent frames, busy background, full-canvas background, friendly human character, anti-aliased painterly render, photo texture, humanoid armor, hard mechanical parts",
+    "promptSections": [
+      {
+        "id": "global-output",
+        "rules": [
+          "Generate a self-contained SVG 2D game asset.",
+          "Use transparent background.",
+          "No full-canvas background or opaque backdrop.",
+          "Fit the requested frame size exactly.",
+          "Set shape-rendering=\"crispEdges\" on the SVG root.",
+          "Use viewBox matching the requested size.",
+          "Target size: 64x64.",
+          "Output media type: image/svg+xml."
+        ]
+      },
+      {
+        "id": "asset-type",
+        "rules": [
+          "Game monster sprite.",
+          "Readable creature silhouette.",
+          "Express simple personality through shape.",
+          "Keep the creature as the only main subject."
+        ]
+      },
+      {
+        "id": "style",
+        "rules": [
+          "pixel art",
+          "low-resolution readable clusters",
+          "limited palette",
+          "hard edges, no soft painterly gradients"
+        ]
+      },
+      {
+        "id": "composition",
+        "rules": [
+          "Composition contract:",
+          "single centered creature",
+          "body sits on lower third",
+          "no props competing with face",
+          "Palette hint: green or blue translucent body.",
+          "Palette hint: darker lower rim.",
+          "Palette hint: small white highlight.",
+          "readable at 32x32 by blob outline and two eyes",
+          "readable at 64x64 with soft highlight",
+          "readable at 128x128 with simple volume"
+        ]
+      },
+      {
+        "id": "visual-preset",
+        "rules": [
+          "Subject: slime.",
+          "Visual archetype: blob_monster.",
+          "blob monster slime.",
+          "rounded blob silhouette",
+          "squashable monster shape",
+          "simple face",
+          "soft highlight",
+          "transparent background",
+          "SVG shape hints: ellipse body; circle eyes; small ellipse highlight."
+        ]
+      },
+      {
+        "id": "negative-contract",
+        "rules": [
+          "No photorealistic.",
+          "No blur.",
+          "No low contrast.",
+          "No cropped.",
+          "No inconsistent frames.",
+          "No busy background.",
+          "No full-canvas background.",
+          "No friendly human character.",
+          "No anti-aliased painterly render.",
+          "No photo texture.",
+          "No humanoid armor.",
+          "No hard mechanical parts."
+        ]
+      }
+    ],
+    "promptCompilerVersion": "prompt-compiler-2",
+    "qualityGateVersion": "quality-gate-1",
+    "qualityContract": {
+      "version": "quality-gate-1",
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ],
+      "forbidden": [
+        "humanoid armor",
+        "hard mechanical parts",
+        "busy background"
+      ]
+    },
+    "outputContract": {
+      "mediaType": "image/svg+xml",
+      "transparentBackground": true,
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "frameSize": {
+        "width": 64,
+        "height": 64
+      },
+      "layout": "horizontal-spritesheet"
+    }
+  },
+  "recipe": {
+    "text": "生成一个像素风史莱姆怪物",
+    "concept": {
+      "assetType": "monster",
+      "subject": "slime",
+      "visualArchetype": "blob_monster",
+      "presetId": "slime_monster",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "animation": "idle",
+      "frameCount": 4,
+      "frameLabels": [
+        "idle_0",
+        "idle_1",
+        "idle_2",
+        "idle_3"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "monster:pixel:64x64:slime_monster:生成一个像素风史莱姆怪物"
+    },
+    "assetId": "slime-idle",
+    "assetType": "monster",
+    "subject": "slime",
+    "presetId": "slime_monster",
+    "visualPreset": {
+      "composition": [
+        "single centered creature",
+        "body sits on lower third",
+        "no props competing with face"
+      ],
+      "paletteHints": [
+        "green or blue translucent body",
+        "darker lower rim",
+        "small white highlight"
+      ],
+      "readabilityRules": [
+        "readable at 32x32 by blob outline and two eyes",
+        "readable at 64x64 with soft highlight",
+        "readable at 128x128 with simple volume"
+      ],
+      "svgShapeHints": [
+        "ellipse body",
+        "circle eyes",
+        "small ellipse highlight"
+      ],
+      "qualityRules": [],
+      "id": "slime_monster",
+      "assetType": "monster",
+      "subjects": [
+        "slime"
+      ],
+      "visualArchetype": "blob_monster",
+      "aliases": [
+        "slime",
+        "史莱姆"
+      ],
+      "silhouette": [
+        "rounded blob silhouette",
+        "squashable monster shape"
+      ],
+      "requiredDetails": [
+        "simple face",
+        "soft highlight",
+        "transparent background"
+      ],
+      "forbidden": [
+        "humanoid armor",
+        "hard mechanical parts",
+        "busy background"
+      ],
+      "requiredSvgFeatures": [
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ]
+    },
+    "visualArchetype": "blob_monster",
+    "silhouette": [
+      "rounded blob silhouette",
+      "squashable monster shape"
+    ],
+    "requiredDetails": [
+      "simple face",
+      "soft highlight",
+      "transparent background"
+    ],
+    "forbidden": [
+      "humanoid armor",
+      "hard mechanical parts",
+      "busy background"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 64,
+      "height": 64
+    },
+    "animation": "idle",
+    "frameCount": 4,
+    "frameLabels": [
+      "idle_0",
+      "idle_1",
+      "idle_2",
+      "idle_3"
+    ],
+    "direction": "front",
+    "palette": "blue",
+    "seed": "monster:pixel:64x64:slime_monster:生成一个像素风史莱姆怪物"
+  },
+  "postprocessVersion": "mvp-api-ready-1",
+  "exportVersion": "mvp-api-ready-1",
+  "rawAssetRef": "ui\\sample-gallery\\cache\\raw\\98643056ade5ba2c",
+  "processedAssetRef": "ui\\sample-gallery\\cache\\processed\\98643056ade5ba2c",
+  "outputFiles": {
+    "frames": [
+      "ui\\sample-gallery\\exports\\slime-idle\\frames\\idle_0.svg",
+      "ui\\sample-gallery\\exports\\slime-idle\\frames\\idle_1.svg",
+      "ui\\sample-gallery\\exports\\slime-idle\\frames\\idle_2.svg",
+      "ui\\sample-gallery\\exports\\slime-idle\\frames\\idle_3.svg"
+    ],
+    "spritesheet": "ui\\sample-gallery\\exports\\slime-idle\\spritesheet.svg",
+    "atlas": "ui\\sample-gallery\\exports\\slime-idle\\atlas.json",
+    "run": "ui\\sample-gallery\\exports\\slime-idle\\run.json"
+  },
+  "qualityReports": [],
+  "events": [
+    "cache.miss",
+    "backend.generate",
+    "postprocess.frames",
+    "export.write"
+  ]
+}

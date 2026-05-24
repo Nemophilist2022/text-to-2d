@@ -1,0 +1,631 @@
+{
+  "version": "demo-gallery-1",
+  "generatedAt": "2026-05-24T08:25:52.641Z",
+  "backendId": "codex-local",
+  "assets": [
+    {
+      "id": "knight",
+      "text": "生成一个像素风骑士角色",
+      "assetId": "knight-idle",
+      "assetType": "character",
+      "subject": "knight",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "backendId": "codex-local",
+      "cacheStatus": "miss",
+      "presetId": "knight_character",
+      "concept": {
+        "assetType": "character",
+        "subject": "knight",
+        "visualArchetype": "armored_character",
+        "presetId": "knight_character",
+        "style": "pixel",
+        "size": {
+          "width": 64,
+          "height": 64
+        },
+        "animation": "idle",
+        "frameCount": 4,
+        "frameLabels": [
+          "idle_0",
+          "idle_1",
+          "idle_2",
+          "idle_3"
+        ],
+        "direction": "front",
+        "palette": "blue",
+        "seed": "character:pixel:64x64:knight_character:生成一个像素风骑士角色"
+      },
+      "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 64x64. Output media type: image/svg+xml. Game character sprite. Readable body/head silhouette. Keep animation frames consistent. Feet or base should sit near bottom center. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: front-facing full-body sprite feet anchored near bottom center centered object inside frame with no crop Palette hint: steel blue armor. Palette hint: bright face/visor contrast. Palette hint: one readable accent color for weapon or shield. readable at 32x32 through helmet/body split readable at 64x64 with weapon silhouette readable at 128x128 with armor detail but no clutter Subject: knight. Visual archetype: armored_character. armored character knight. helmeted knight silhouette compact readable RPG character shape helmet small armor body weapon or shield hint transparent background SVG shape hints: circle or rect helmet; rect body armor; path sword or shield silhouette. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No landscape-only image. No anti-aliased painterly render. No photo texture. No modern clothing. No photorealistic render. No background scene.",
+      "promptSections": [
+        {
+          "id": "global-output",
+          "rules": [
+            "Generate a self-contained SVG 2D game asset.",
+            "Use transparent background.",
+            "No full-canvas background or opaque backdrop.",
+            "Fit the requested frame size exactly.",
+            "Set shape-rendering=\"crispEdges\" on the SVG root.",
+            "Use viewBox matching the requested size.",
+            "Target size: 64x64.",
+            "Output media type: image/svg+xml."
+          ]
+        },
+        {
+          "id": "asset-type",
+          "rules": [
+            "Game character sprite.",
+            "Readable body/head silhouette.",
+            "Keep animation frames consistent.",
+            "Feet or base should sit near bottom center."
+          ]
+        },
+        {
+          "id": "style",
+          "rules": [
+            "pixel art",
+            "low-resolution readable clusters",
+            "limited palette",
+            "hard edges, no soft painterly gradients"
+          ]
+        },
+        {
+          "id": "composition",
+          "rules": [
+            "Composition contract:",
+            "front-facing full-body sprite",
+            "feet anchored near bottom center",
+            "centered object inside frame with no crop",
+            "Palette hint: steel blue armor.",
+            "Palette hint: bright face/visor contrast.",
+            "Palette hint: one readable accent color for weapon or shield.",
+            "readable at 32x32 through helmet/body split",
+            "readable at 64x64 with weapon silhouette",
+            "readable at 128x128 with armor detail but no clutter"
+          ]
+        },
+        {
+          "id": "visual-preset",
+          "rules": [
+            "Subject: knight.",
+            "Visual archetype: armored_character.",
+            "armored character knight.",
+            "helmeted knight silhouette",
+            "compact readable RPG character shape",
+            "helmet",
+            "small armor body",
+            "weapon or shield hint",
+            "transparent background",
+            "SVG shape hints: circle or rect helmet; rect body armor; path sword or shield silhouette."
+          ]
+        },
+        {
+          "id": "negative-contract",
+          "rules": [
+            "No photorealistic.",
+            "No blur.",
+            "No low contrast.",
+            "No cropped.",
+            "No inconsistent frames.",
+            "No busy background.",
+            "No full-canvas background.",
+            "No landscape-only image.",
+            "No anti-aliased painterly render.",
+            "No photo texture.",
+            "No modern clothing.",
+            "No photorealistic render.",
+            "No background scene."
+          ]
+        }
+      ],
+      "qualityReports": [],
+      "paths": {
+        "frame": "sample-gallery/exports/knight-idle/frames/idle_0.svg",
+        "spritesheet": "sample-gallery/exports/knight-idle/spritesheet.svg",
+        "atlas": "sample-gallery/exports/knight-idle/atlas.json",
+        "run": "sample-gallery/exports/knight-idle/run.json"
+      }
+    },
+    {
+      "id": "slime",
+      "text": "生成一个像素风史莱姆怪物",
+      "assetId": "slime-idle",
+      "assetType": "monster",
+      "subject": "slime",
+      "style": "pixel",
+      "size": {
+        "width": 64,
+        "height": 64
+      },
+      "backendId": "codex-local",
+      "cacheStatus": "miss",
+      "presetId": "slime_monster",
+      "concept": {
+        "assetType": "monster",
+        "subject": "slime",
+        "visualArchetype": "blob_monster",
+        "presetId": "slime_monster",
+        "style": "pixel",
+        "size": {
+          "width": 64,
+          "height": 64
+        },
+        "animation": "idle",
+        "frameCount": 4,
+        "frameLabels": [
+          "idle_0",
+          "idle_1",
+          "idle_2",
+          "idle_3"
+        ],
+        "direction": "front",
+        "palette": "blue",
+        "seed": "monster:pixel:64x64:slime_monster:生成一个像素风史莱姆怪物"
+      },
+      "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 64x64. Output media type: image/svg+xml. Game monster sprite. Readable creature silhouette. Express simple personality through shape. Keep the creature as the only main subject. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: single centered creature body sits on lower third no props competing with face Palette hint: green or blue translucent body. Palette hint: darker lower rim. Palette hint: small white highlight. readable at 32x32 by blob outline and two eyes readable at 64x64 with soft highlight readable at 128x128 with simple volume Subject: slime. Visual archetype: blob_monster. blob monster slime. rounded blob silhouette squashable monster shape simple face soft highlight transparent background SVG shape hints: ellipse body; circle eyes; small ellipse highlight. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No friendly human character. No anti-aliased painterly render. No photo texture. No humanoid armor. No hard mechanical parts.",
+      "promptSections": [
+        {
+          "id": "global-output",
+          "rules": [
+            "Generate a self-contained SVG 2D game asset.",
+            "Use transparent background.",
+            "No full-canvas background or opaque backdrop.",
+            "Fit the requested frame size exactly.",
+            "Set shape-rendering=\"crispEdges\" on the SVG root.",
+            "Use viewBox matching the requested size.",
+            "Target size: 64x64.",
+            "Output media type: image/svg+xml."
+          ]
+        },
+        {
+          "id": "asset-type",
+          "rules": [
+            "Game monster sprite.",
+            "Readable creature silhouette.",
+            "Express simple personality through shape.",
+            "Keep the creature as the only main subject."
+          ]
+        },
+        {
+          "id": "style",
+          "rules": [
+            "pixel art",
+            "low-resolution readable clusters",
+            "limited palette",
+            "hard edges, no soft painterly gradients"
+          ]
+        },
+        {
+          "id": "composition",
+          "rules": [
+            "Composition contract:",
+            "single centered creature",
+            "body sits on lower third",
+            "no props competing with face",
+            "Palette hint: green or blue translucent body.",
+            "Palette hint: darker lower rim.",
+            "Palette hint: small white highlight.",
+            "readable at 32x32 by blob outline and two eyes",
+            "readable at 64x64 with soft highlight",
+            "readable at 128x128 with simple volume"
+          ]
+        },
+        {
+          "id": "visual-preset",
+          "rules": [
+            "Subject: slime.",
+            "Visual archetype: blob_monster.",
+            "blob monster slime.",
+            "rounded blob silhouette",
+            "squashable monster shape",
+            "simple face",
+            "soft highlight",
+            "transparent background",
+            "SVG shape hints: ellipse body; circle eyes; small ellipse highlight."
+          ]
+        },
+        {
+          "id": "negative-contract",
+          "rules": [
+            "No photorealistic.",
+            "No blur.",
+            "No low contrast.",
+            "No cropped.",
+            "No inconsistent frames.",
+            "No busy background.",
+            "No full-canvas background.",
+            "No friendly human character.",
+            "No anti-aliased painterly render.",
+            "No photo texture.",
+            "No humanoid armor.",
+            "No hard mechanical parts."
+          ]
+        }
+      ],
+      "qualityReports": [],
+      "paths": {
+        "frame": "sample-gallery/exports/slime-idle/frames/idle_0.svg",
+        "spritesheet": "sample-gallery/exports/slime-idle/spritesheet.svg",
+        "atlas": "sample-gallery/exports/slime-idle/atlas.json",
+        "run": "sample-gallery/exports/slime-idle/run.json"
+      }
+    },
+    {
+      "id": "gem",
+      "text": "生成一个像素风宝石道具",
+      "assetId": "gem-idle",
+      "assetType": "item",
+      "subject": "gem",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "backendId": "codex-local",
+      "cacheStatus": "miss",
+      "presetId": "gem_item",
+      "concept": {
+        "assetType": "item",
+        "subject": "gem",
+        "visualArchetype": "faceted_crystal",
+        "presetId": "gem_item",
+        "style": "pixel",
+        "size": {
+          "width": 32,
+          "height": 32
+        },
+        "animation": "idle",
+        "frameCount": 1,
+        "frameLabels": [
+          "idle_0"
+        ],
+        "direction": "front",
+        "palette": "blue",
+        "seed": "item:pixel:32x32:gem_item:生成一个像素风宝石道具"
+      },
+      "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. Game item pickup. Use a centered object composition. Center the object with a strong item silhouette. No scenery or character body. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: centered object single pickup item leave 2-4px transparent padding around object Palette hint: cyan or blue body. Palette hint: upper-left white highlight. Palette hint: lower-right darker facet. readable at 32x32 through diamond outline readable at 64x64 through facet separation readable at 128x128 with controlled facet detail Subject: gem. Visual archetype: faceted_crystal. faceted crystal gem. diamond or hexagonal crystal outline pointed top or bottom readable crystal silhouette at 32x32 angular polygon facets upper-left white highlight lower-right darker facet transparent background SVG shape hints: outer polygon crystal silhouette; inner polygon facets; small white polygon highlight. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No full scene. No large background prop. No anti-aliased painterly render. No photo texture. No lantern. No lamp. No handle. No base. No rectangular container. No black background block. No black occluder.",
+      "promptSections": [
+        {
+          "id": "global-output",
+          "rules": [
+            "Generate a self-contained SVG 2D game asset.",
+            "Use transparent background.",
+            "No full-canvas background or opaque backdrop.",
+            "Fit the requested frame size exactly.",
+            "Set shape-rendering=\"crispEdges\" on the SVG root.",
+            "Use viewBox matching the requested size.",
+            "Target size: 32x32.",
+            "Output media type: image/svg+xml."
+          ]
+        },
+        {
+          "id": "asset-type",
+          "rules": [
+            "Game item pickup.",
+            "Use a centered object composition.",
+            "Center the object with a strong item silhouette.",
+            "No scenery or character body."
+          ]
+        },
+        {
+          "id": "style",
+          "rules": [
+            "pixel art",
+            "low-resolution readable clusters",
+            "limited palette",
+            "hard edges, no soft painterly gradients"
+          ]
+        },
+        {
+          "id": "composition",
+          "rules": [
+            "Composition contract:",
+            "centered object",
+            "single pickup item",
+            "leave 2-4px transparent padding around object",
+            "Palette hint: cyan or blue body.",
+            "Palette hint: upper-left white highlight.",
+            "Palette hint: lower-right darker facet.",
+            "readable at 32x32 through diamond outline",
+            "readable at 64x64 through facet separation",
+            "readable at 128x128 with controlled facet detail"
+          ]
+        },
+        {
+          "id": "visual-preset",
+          "rules": [
+            "Subject: gem.",
+            "Visual archetype: faceted_crystal.",
+            "faceted crystal gem.",
+            "diamond or hexagonal crystal outline",
+            "pointed top or bottom",
+            "readable crystal silhouette at 32x32",
+            "angular polygon facets",
+            "upper-left white highlight",
+            "lower-right darker facet",
+            "transparent background",
+            "SVG shape hints: outer polygon crystal silhouette; inner polygon facets; small white polygon highlight."
+          ]
+        },
+        {
+          "id": "negative-contract",
+          "rules": [
+            "No photorealistic.",
+            "No blur.",
+            "No low contrast.",
+            "No cropped.",
+            "No inconsistent frames.",
+            "No busy background.",
+            "No full-canvas background.",
+            "No full scene.",
+            "No large background prop.",
+            "No anti-aliased painterly render.",
+            "No photo texture.",
+            "No lantern.",
+            "No lamp.",
+            "No handle.",
+            "No base.",
+            "No rectangular container.",
+            "No black background block.",
+            "No black occluder."
+          ]
+        }
+      ],
+      "qualityReports": [],
+      "paths": {
+        "frame": "sample-gallery/exports/gem-idle/frames/idle_0.svg",
+        "spritesheet": "sample-gallery/exports/gem-idle/spritesheet.svg",
+        "atlas": "sample-gallery/exports/gem-idle/atlas.json",
+        "run": "sample-gallery/exports/gem-idle/run.json"
+      }
+    },
+    {
+      "id": "grass",
+      "text": "草地地图块",
+      "assetId": "grass-idle",
+      "assetType": "map-tile",
+      "subject": "grass",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "backendId": "codex-local",
+      "cacheStatus": "miss",
+      "presetId": "grass_tile",
+      "concept": {
+        "assetType": "map-tile",
+        "subject": "grass",
+        "visualArchetype": "terrain_tile",
+        "presetId": "grass_tile",
+        "style": "pixel",
+        "size": {
+          "width": 32,
+          "height": 32
+        },
+        "animation": "idle",
+        "frameCount": 1,
+        "frameLabels": [
+          "idle_0"
+        ],
+        "direction": "front",
+        "palette": "blue",
+        "seed": "map-tile:pixel:32x32:grass_tile:草地地图块"
+      },
+      "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. Map tile asset. Use tile-filling rules instead of centered object rules. Fill the tile footprint with edge-safe patterns. Avoid single floating props. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: tile-filling terrain surface edge-safe pattern no centered pickup object Palette hint: base grass green. Palette hint: two darker grass clusters. Palette hint: one yellow-green highlight cluster. readable at 32x32 as a grass tile readable at 64x64 with repeated clusters readable at 128x128 without noisy micro-detail Subject: grass. Visual archetype: terrain_tile. terrain tile grass. full tile footprint seamless square terrain patch grass texture clusters tileable edges transparent or edge-safe background SVG shape hints: edge-safe small rect or path grass clusters; multiple short blades; no full-canvas opaque background block. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No floating object. No character sprite. No anti-aliased painterly render. No photo texture. No character. No weapon. No ui button. No single floating item.",
+      "promptSections": [
+        {
+          "id": "global-output",
+          "rules": [
+            "Generate a self-contained SVG 2D game asset.",
+            "Use transparent background.",
+            "No full-canvas background or opaque backdrop.",
+            "Fit the requested frame size exactly.",
+            "Set shape-rendering=\"crispEdges\" on the SVG root.",
+            "Use viewBox matching the requested size.",
+            "Target size: 32x32.",
+            "Output media type: image/svg+xml."
+          ]
+        },
+        {
+          "id": "asset-type",
+          "rules": [
+            "Map tile asset.",
+            "Use tile-filling rules instead of centered object rules.",
+            "Fill the tile footprint with edge-safe patterns.",
+            "Avoid single floating props."
+          ]
+        },
+        {
+          "id": "style",
+          "rules": [
+            "pixel art",
+            "low-resolution readable clusters",
+            "limited palette",
+            "hard edges, no soft painterly gradients"
+          ]
+        },
+        {
+          "id": "composition",
+          "rules": [
+            "Composition contract:",
+            "tile-filling terrain surface",
+            "edge-safe pattern",
+            "no centered pickup object",
+            "Palette hint: base grass green.",
+            "Palette hint: two darker grass clusters.",
+            "Palette hint: one yellow-green highlight cluster.",
+            "readable at 32x32 as a grass tile",
+            "readable at 64x64 with repeated clusters",
+            "readable at 128x128 without noisy micro-detail"
+          ]
+        },
+        {
+          "id": "visual-preset",
+          "rules": [
+            "Subject: grass.",
+            "Visual archetype: terrain_tile.",
+            "terrain tile grass.",
+            "full tile footprint",
+            "seamless square terrain patch",
+            "grass texture clusters",
+            "tileable edges",
+            "transparent or edge-safe background",
+            "SVG shape hints: edge-safe small rect or path grass clusters; multiple short blades; no full-canvas opaque background block."
+          ]
+        },
+        {
+          "id": "negative-contract",
+          "rules": [
+            "No photorealistic.",
+            "No blur.",
+            "No low contrast.",
+            "No cropped.",
+            "No inconsistent frames.",
+            "No busy background.",
+            "No full-canvas background.",
+            "No floating object.",
+            "No character sprite.",
+            "No anti-aliased painterly render.",
+            "No photo texture.",
+            "No character.",
+            "No weapon.",
+            "No ui button.",
+            "No single floating item."
+          ]
+        }
+      ],
+      "qualityReports": [],
+      "paths": {
+        "frame": "sample-gallery/exports/grass-idle/frames/idle_0.svg",
+        "spritesheet": "sample-gallery/exports/grass-idle/spritesheet.svg",
+        "atlas": "sample-gallery/exports/grass-idle/atlas.json",
+        "run": "sample-gallery/exports/grass-idle/run.json"
+      }
+    },
+    {
+      "id": "heart",
+      "text": "红心 UI 图标",
+      "assetId": "heart-idle",
+      "assetType": "ui-icon",
+      "subject": "heart",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "backendId": "codex-local",
+      "cacheStatus": "miss",
+      "presetId": "heart_ui_icon",
+      "concept": {
+        "assetType": "ui-icon",
+        "subject": "heart",
+        "visualArchetype": "heart_icon",
+        "presetId": "heart_ui_icon",
+        "style": "pixel",
+        "size": {
+          "width": 32,
+          "height": 32
+        },
+        "animation": "idle",
+        "frameCount": 1,
+        "frameLabels": [
+          "idle_0"
+        ],
+        "direction": "front",
+        "palette": "blue",
+        "seed": "ui-icon:pixel:32x32:heart_ui_icon:红心 UI 图标"
+      },
+      "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. UI icon asset. Use a centered icon composition. Simple high-contrast icon shape. Readable in a game HUD. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: centered UI icon large silhouette occupying most of frame transparent padding around icon Palette hint: red primary fill. Palette hint: dark red lower shadow. Palette hint: small pink or white upper-left highlight. readable at 32x32 as a heart readable at 64x64 with highlight and shadow readable at 128x128 without text labels Subject: heart. Visual archetype: heart_icon. heart icon heart. simple heart silhouette readable UI icon at 32x32 clear red heart shape small highlight transparent background SVG shape hints: single path heart silhouette; smaller path highlight; optional dark outline. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No text label. No complex scene. No anti-aliased painterly render. No photo texture. No photorealistic organ.",
+      "promptSections": [
+        {
+          "id": "global-output",
+          "rules": [
+            "Generate a self-contained SVG 2D game asset.",
+            "Use transparent background.",
+            "No full-canvas background or opaque backdrop.",
+            "Fit the requested frame size exactly.",
+            "Set shape-rendering=\"crispEdges\" on the SVG root.",
+            "Use viewBox matching the requested size.",
+            "Target size: 32x32.",
+            "Output media type: image/svg+xml."
+          ]
+        },
+        {
+          "id": "asset-type",
+          "rules": [
+            "UI icon asset.",
+            "Use a centered icon composition.",
+            "Simple high-contrast icon shape.",
+            "Readable in a game HUD."
+          ]
+        },
+        {
+          "id": "style",
+          "rules": [
+            "pixel art",
+            "low-resolution readable clusters",
+            "limited palette",
+            "hard edges, no soft painterly gradients"
+          ]
+        },
+        {
+          "id": "composition",
+          "rules": [
+            "Composition contract:",
+            "centered UI icon",
+            "large silhouette occupying most of frame",
+            "transparent padding around icon",
+            "Palette hint: red primary fill.",
+            "Palette hint: dark red lower shadow.",
+            "Palette hint: small pink or white upper-left highlight.",
+            "readable at 32x32 as a heart",
+            "readable at 64x64 with highlight and shadow",
+            "readable at 128x128 without text labels"
+          ]
+        },
+        {
+          "id": "visual-preset",
+          "rules": [
+            "Subject: heart.",
+            "Visual archetype: heart_icon.",
+            "heart icon heart.",
+            "simple heart silhouette",
+            "readable UI icon at 32x32",
+            "clear red heart shape",
+            "small highlight",
+            "transparent background",
+            "SVG shape hints: single path heart silhouette; smaller path highlight; optional dark outline."
+          ]
+        },
+        {
+          "id": "negative-contract",
+          "rules": [
+            "No photorealistic.",
+            "No blur.",
+            "No low contrast.",
+            "No cropped.",
+            "No inconsistent frames.",
+            "No busy background.",
+            "No full-canvas background.",
+            "No text label.",
+            "No complex scene.",
+            "No anti-aliased painterly render.",
+            "No photo texture.",
+            "No photorealistic organ."
+          ]
+        }
+      ],
+      "qualityReports": [],
+      "paths": {
+        "frame": "sample-gallery/exports/heart-idle/frames/idle_0.svg",
+        "spritesheet": "sample-gallery/exports/heart-idle/spritesheet.svg",
+        "atlas": "sample-gallery/exports/heart-idle/atlas.json",
+        "run": "sample-gallery/exports/heart-idle/run.json"
+      }
+    }
+  ]
+}

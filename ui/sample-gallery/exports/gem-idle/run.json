@@ -1,0 +1,355 @@
+{
+  "assetId": "gem-idle",
+  "variantId": "idle",
+  "cacheKey": "974aa391a405ed1b",
+  "cacheStatus": "miss",
+  "backendId": "codex-local",
+  "backendVersion": "mvp-api-ready-1",
+  "generationPacket": {
+    "requestId": "e81850dd0649b55b",
+    "assetId": "gem-idle",
+    "assetType": "item",
+    "subject": "gem",
+    "presetId": "gem_item",
+    "concept": {
+      "assetType": "item",
+      "subject": "gem",
+      "visualArchetype": "faceted_crystal",
+      "presetId": "gem_item",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "item:pixel:32x32:gem_item:生成一个像素风宝石道具"
+    },
+    "visualPreset": "gem_item",
+    "visualArchetype": "faceted_crystal",
+    "silhouette": [
+      "diamond or hexagonal crystal outline",
+      "pointed top or bottom",
+      "readable crystal silhouette at 32x32"
+    ],
+    "requiredDetails": [
+      "angular polygon facets",
+      "upper-left white highlight",
+      "lower-right darker facet",
+      "transparent background"
+    ],
+    "forbidden": [
+      "lantern",
+      "lamp",
+      "handle",
+      "base",
+      "rectangular container",
+      "black background block",
+      "black occluder"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "polygonOrPath",
+        "severity": "error"
+      },
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "prompt": "Generate a self-contained SVG 2D game asset. Use transparent background. No full-canvas background or opaque backdrop. Fit the requested frame size exactly. Set shape-rendering=\"crispEdges\" on the SVG root. Use viewBox matching the requested size. Target size: 32x32. Output media type: image/svg+xml. Game item pickup. Use a centered object composition. Center the object with a strong item silhouette. No scenery or character body. pixel art low-resolution readable clusters limited palette hard edges, no soft painterly gradients Composition contract: centered object single pickup item leave 2-4px transparent padding around object Palette hint: cyan or blue body. Palette hint: upper-left white highlight. Palette hint: lower-right darker facet. readable at 32x32 through diamond outline readable at 64x64 through facet separation readable at 128x128 with controlled facet detail Subject: gem. Visual archetype: faceted_crystal. faceted crystal gem. diamond or hexagonal crystal outline pointed top or bottom readable crystal silhouette at 32x32 angular polygon facets upper-left white highlight lower-right darker facet transparent background SVG shape hints: outer polygon crystal silhouette; inner polygon facets; small white polygon highlight. No photorealistic. No blur. No low contrast. No cropped. No inconsistent frames. No busy background. No full-canvas background. No full scene. No large background prop. No anti-aliased painterly render. No photo texture. No lantern. No lamp. No handle. No base. No rectangular container. No black background block. No black occluder.",
+    "negativePrompt": "photorealistic, blur, low contrast, cropped, inconsistent frames, busy background, full-canvas background, full scene, large background prop, anti-aliased painterly render, photo texture, lantern, lamp, handle, base, rectangular container, black background block, black occluder",
+    "promptSections": [
+      {
+        "id": "global-output",
+        "rules": [
+          "Generate a self-contained SVG 2D game asset.",
+          "Use transparent background.",
+          "No full-canvas background or opaque backdrop.",
+          "Fit the requested frame size exactly.",
+          "Set shape-rendering=\"crispEdges\" on the SVG root.",
+          "Use viewBox matching the requested size.",
+          "Target size: 32x32.",
+          "Output media type: image/svg+xml."
+        ]
+      },
+      {
+        "id": "asset-type",
+        "rules": [
+          "Game item pickup.",
+          "Use a centered object composition.",
+          "Center the object with a strong item silhouette.",
+          "No scenery or character body."
+        ]
+      },
+      {
+        "id": "style",
+        "rules": [
+          "pixel art",
+          "low-resolution readable clusters",
+          "limited palette",
+          "hard edges, no soft painterly gradients"
+        ]
+      },
+      {
+        "id": "composition",
+        "rules": [
+          "Composition contract:",
+          "centered object",
+          "single pickup item",
+          "leave 2-4px transparent padding around object",
+          "Palette hint: cyan or blue body.",
+          "Palette hint: upper-left white highlight.",
+          "Palette hint: lower-right darker facet.",
+          "readable at 32x32 through diamond outline",
+          "readable at 64x64 through facet separation",
+          "readable at 128x128 with controlled facet detail"
+        ]
+      },
+      {
+        "id": "visual-preset",
+        "rules": [
+          "Subject: gem.",
+          "Visual archetype: faceted_crystal.",
+          "faceted crystal gem.",
+          "diamond or hexagonal crystal outline",
+          "pointed top or bottom",
+          "readable crystal silhouette at 32x32",
+          "angular polygon facets",
+          "upper-left white highlight",
+          "lower-right darker facet",
+          "transparent background",
+          "SVG shape hints: outer polygon crystal silhouette; inner polygon facets; small white polygon highlight."
+        ]
+      },
+      {
+        "id": "negative-contract",
+        "rules": [
+          "No photorealistic.",
+          "No blur.",
+          "No low contrast.",
+          "No cropped.",
+          "No inconsistent frames.",
+          "No busy background.",
+          "No full-canvas background.",
+          "No full scene.",
+          "No large background prop.",
+          "No anti-aliased painterly render.",
+          "No photo texture.",
+          "No lantern.",
+          "No lamp.",
+          "No handle.",
+          "No base.",
+          "No rectangular container.",
+          "No black background block.",
+          "No black occluder."
+        ]
+      }
+    ],
+    "promptCompilerVersion": "prompt-compiler-2",
+    "qualityGateVersion": "quality-gate-1",
+    "qualityContract": {
+      "version": "quality-gate-1",
+      "requiredSvgFeatures": [
+        {
+          "feature": "polygonOrPath",
+          "severity": "error"
+        },
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ],
+      "forbidden": [
+        "lantern",
+        "lamp",
+        "handle",
+        "base",
+        "rectangular container",
+        "black background block",
+        "black occluder"
+      ]
+    },
+    "outputContract": {
+      "mediaType": "image/svg+xml",
+      "transparentBackground": true,
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "frameSize": {
+        "width": 32,
+        "height": 32
+      },
+      "layout": "horizontal-spritesheet"
+    }
+  },
+  "recipe": {
+    "text": "生成一个像素风宝石道具",
+    "concept": {
+      "assetType": "item",
+      "subject": "gem",
+      "visualArchetype": "faceted_crystal",
+      "presetId": "gem_item",
+      "style": "pixel",
+      "size": {
+        "width": 32,
+        "height": 32
+      },
+      "animation": "idle",
+      "frameCount": 1,
+      "frameLabels": [
+        "idle_0"
+      ],
+      "direction": "front",
+      "palette": "blue",
+      "seed": "item:pixel:32x32:gem_item:生成一个像素风宝石道具"
+    },
+    "assetId": "gem-idle",
+    "assetType": "item",
+    "subject": "gem",
+    "presetId": "gem_item",
+    "visualPreset": {
+      "composition": [
+        "centered object",
+        "single pickup item",
+        "leave 2-4px transparent padding around object"
+      ],
+      "paletteHints": [
+        "cyan or blue body",
+        "upper-left white highlight",
+        "lower-right darker facet"
+      ],
+      "readabilityRules": [
+        "readable at 32x32 through diamond outline",
+        "readable at 64x64 through facet separation",
+        "readable at 128x128 with controlled facet detail"
+      ],
+      "svgShapeHints": [
+        "outer polygon crystal silhouette",
+        "inner polygon facets",
+        "small white polygon highlight"
+      ],
+      "qualityRules": [],
+      "id": "gem_item",
+      "assetType": "item",
+      "subjects": [
+        "gem"
+      ],
+      "visualArchetype": "faceted_crystal",
+      "aliases": [
+        "gem",
+        "crystal",
+        "宝石",
+        "水晶"
+      ],
+      "silhouette": [
+        "diamond or hexagonal crystal outline",
+        "pointed top or bottom",
+        "readable crystal silhouette at 32x32"
+      ],
+      "requiredDetails": [
+        "angular polygon facets",
+        "upper-left white highlight",
+        "lower-right darker facet",
+        "transparent background"
+      ],
+      "forbidden": [
+        "lantern",
+        "lamp",
+        "handle",
+        "base",
+        "rectangular container",
+        "black background block",
+        "black occluder"
+      ],
+      "requiredSvgFeatures": [
+        {
+          "feature": "polygonOrPath",
+          "severity": "error"
+        },
+        {
+          "feature": "subjectShape",
+          "severity": "error"
+        }
+      ]
+    },
+    "visualArchetype": "faceted_crystal",
+    "silhouette": [
+      "diamond or hexagonal crystal outline",
+      "pointed top or bottom",
+      "readable crystal silhouette at 32x32"
+    ],
+    "requiredDetails": [
+      "angular polygon facets",
+      "upper-left white highlight",
+      "lower-right darker facet",
+      "transparent background"
+    ],
+    "forbidden": [
+      "lantern",
+      "lamp",
+      "handle",
+      "base",
+      "rectangular container",
+      "black background block",
+      "black occluder"
+    ],
+    "requiredSvgFeatures": [
+      {
+        "feature": "polygonOrPath",
+        "severity": "error"
+      },
+      {
+        "feature": "subjectShape",
+        "severity": "error"
+      }
+    ],
+    "style": "pixel",
+    "size": {
+      "width": 32,
+      "height": 32
+    },
+    "animation": "idle",
+    "frameCount": 1,
+    "frameLabels": [
+      "idle_0"
+    ],
+    "direction": "front",
+    "palette": "blue",
+    "seed": "item:pixel:32x32:gem_item:生成一个像素风宝石道具"
+  },
+  "postprocessVersion": "mvp-api-ready-1",
+  "exportVersion": "mvp-api-ready-1",
+  "rawAssetRef": "ui\\sample-gallery\\cache\\raw\\974aa391a405ed1b",
+  "processedAssetRef": "ui\\sample-gallery\\cache\\processed\\974aa391a405ed1b",
+  "outputFiles": {
+    "frames": [
+      "ui\\sample-gallery\\exports\\gem-idle\\frames\\idle_0.svg"
+    ],
+    "spritesheet": "ui\\sample-gallery\\exports\\gem-idle\\spritesheet.svg",
+    "atlas": "ui\\sample-gallery\\exports\\gem-idle\\atlas.json",
+    "run": "ui\\sample-gallery\\exports\\gem-idle\\run.json"
+  },
+  "qualityReports": [],
+  "events": [
+    "cache.miss",
+    "backend.generate",
+    "postprocess.frames",
+    "export.write"
+  ]
+}

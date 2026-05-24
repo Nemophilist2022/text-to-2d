@@ -1,0 +1,27 @@
+{
+  "assetId": "gem-idle",
+  "variantId": "idle",
+  "image": "spritesheet.svg",
+  "frameSize": {
+    "width": 32,
+    "height": 32
+  },
+  "sheetSize": {
+    "width": 32,
+    "height": 32
+  },
+  "frames": [
+    {
+      "id": "idle_0",
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32,
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "source": "frames/idle_0.svg"
+    }
+  ]
+}

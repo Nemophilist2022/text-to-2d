@@ -12,12 +12,13 @@ import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-
 
 const DEFAULT_TEXT = '生成一个像素风骑士角色';
 const DEFAULT_SELECTIONS = { assetType: 'character', style: 'pixel', size: '64x64' };
+const DEFAULT_BACKEND_ID = 'chat-svg';
 
 export async function runDemo({
   workspace = cwd(),
   text = DEFAULT_TEXT,
   selections = DEFAULT_SELECTIONS,
-  backendId = 'codex-local',
+  backendId = DEFAULT_BACKEND_ID,
   skipBackendCompare = false,
 } = {}) {
   const recipe = compileAssetRecipe({ text, selections });
@@ -57,7 +58,7 @@ export function resolveCliOptions(argv) {
   return {
     workspace: workspaceFlagIndex === -1 ? cwd() : argv[workspaceFlagIndex + 1],
     text: textFlagIndex === -1 ? DEFAULT_TEXT : argv[textFlagIndex + 1],
-    backendId: backendFlagIndex === -1 ? 'codex-local' : argv[backendFlagIndex + 1],
+    backendId: backendFlagIndex === -1 ? DEFAULT_BACKEND_ID : argv[backendFlagIndex + 1],
     skipBackendCompare,
     selections: {
       assetType: assetTypeFlagIndex === -1 ? DEFAULT_SELECTIONS.assetType : argv[assetTypeFlagIndex + 1],
