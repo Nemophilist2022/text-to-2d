@@ -1,6 +1,7 @@
-﻿const state = { gallery: null, selectedIndex: 0 };
+﻿const state = { gallery: { assets: [] }, selectedIndex: 0, generatedCount: 0 };
 
 const elements = {
+  form: document.querySelector('#generate-form'),
   list: document.querySelector('#asset-list'),
   title: document.querySelector('#asset-title'),
   image: document.querySelector('#sprite-preview'),
@@ -10,6 +11,9 @@ const elements = {
   style: document.querySelector('#style'),
   size: document.querySelector('#size'),
   backend: document.querySelector('#backend'),
+  forceRegenerate: document.querySelector('#force-regenerate'),
+  generateButton: document.querySelector('#generate-button'),
+  formStatus: document.querySelector('#form-status'),
   preset: document.querySelector('#preset-id'),
   subject: document.querySelector('#subject'),
   framePath: document.querySelector('#frame-path'),
@@ -25,6 +29,7 @@ async function init() {
   renderList();
   renderSelected();
   elements.copy.addEventListener('click', copyCommand);
+  elements.form.addEventListener('submit', generateAsset);
 }
 
 async function loadGallery() {
@@ -34,17 +39,84 @@ async function loadGallery() {
     return response.json();
   } catch (error) {
     if (window.DEMO_GALLERY) return window.DEMO_GALLERY;
-    throw error;
+    return { generatedAt: new Date().toISOString(), assets: [] };
   }
+}
+
+async function generateAsset(event) {
+  event.preventDefault();
+  setLoading(true, 'Generating with local pipeline...');
+
+  const payload = {
+    text: elements.text.value.trim(),
+    assetType: elements.assetType.value,
+    style: elements.style.value,
+    size: elements.size.value,
+    backendId: elements.backend.value,
+    forceRegenerate: elements.forceRegenerate.checked,
+  };
+
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const body = await response.json();
+    if (!response.ok || body.status !== 'success') {
+      throw new Error(body.error?.message || `Generation failed: HTTP ${response.status}`);
+    }
+
+    const asset = normalizeGeneratedAsset(body, payload);
+    state.gallery.assets.unshift(asset);
+    state.selectedIndex = 0;
+    renderList();
+    renderSelected();
+    setStatus(`Generated ${asset.assetId}. cache=${asset.cacheStatus}`, 'success');
+  } catch (error) {
+    setStatus(`${error.message}. 当前 API 限额时请使用 codex-local。`, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function normalizeGeneratedAsset(body, payload) {
+  state.generatedCount += 1;
+  const size = parseSize(payload.size);
+  return {
+    id: `generated-${state.generatedCount}`,
+    assetId: body.assetId,
+    assetType: body.assetType,
+    text: payload.text,
+    style: payload.style,
+    size,
+    backendId: body.backendId,
+    cacheStatus: body.cacheStatus,
+    cacheKey: body.cacheKey,
+    presetId: body.recipe?.presetId || body.generationPacket?.presetId || '-',
+    subject: body.recipe?.subject || body.generationPacket?.subject || '-',
+    promptSections: body.generationPacket?.promptSections || [],
+    qualityReports: body.qualityReports || [],
+    paths: {
+      frame: body.outputUrls?.frame,
+      spritesheet: body.outputUrls?.spritesheet,
+      atlas: body.outputUrls?.atlas,
+      run: body.outputUrls?.run,
+    },
+  };
 }
 
 function renderList() {
   elements.list.innerHTML = '';
+  if (!state.gallery.assets.length) {
+    elements.list.innerHTML = '<p class="empty-list">No assets yet. Generate one from the form.</p>';
+    return;
+  }
   state.gallery.assets.forEach((asset, index) => {
     const button = document.createElement('button');
     button.className = `asset-button${index === state.selectedIndex ? ' active' : ''}`;
     button.type = 'button';
-    button.innerHTML = `<strong>${asset.assetId}</strong><small>${asset.assetType} / ${asset.presetId}</small>`;
+    button.innerHTML = `<strong>${escapeHtml(asset.assetId)}</strong><small>${escapeHtml(asset.assetType)} / ${escapeHtml(asset.presetId)} / ${escapeHtml(asset.cacheStatus)}</small>`;
     button.addEventListener('click', () => {
       state.selectedIndex = index;
       renderList();
@@ -56,6 +128,13 @@ function renderList() {
 
 function renderSelected() {
   const asset = state.gallery.assets[state.selectedIndex];
+  if (!asset) {
+    elements.title.textContent = 'No asset';
+    elements.image.removeAttribute('src');
+    elements.cache.textContent = 'none';
+    return;
+  }
+
   elements.title.textContent = asset.assetId;
   elements.image.src = asset.paths.frame;
   elements.image.alt = `${asset.assetId} generated preview`;
@@ -74,17 +153,21 @@ function renderSelected() {
   renderQualityReports(asset.qualityReports);
 }
 
-function renderPromptSections(sections) {
+function renderPromptSections(sections = []) {
   elements.promptSections.innerHTML = '';
+  if (!sections.length) {
+    elements.promptSections.innerHTML = '<section class="section-box"><p>No prompt sections recorded.</p></section>';
+    return;
+  }
   sections.forEach((section) => {
     const box = document.createElement('section');
     box.className = 'section-box';
-    box.innerHTML = `<h3>${section.id}</h3><ul>${section.rules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul>`;
+    box.innerHTML = `<h3>${escapeHtml(section.id)}</h3><ul>${section.rules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul>`;
     elements.promptSections.append(box);
   });
 }
 
-function renderQualityReports(reports) {
+function renderQualityReports(reports = []) {
   elements.qualityReports.innerHTML = '';
   if (!reports.length) {
     elements.qualityReports.innerHTML = '<section class="section-box"><p>No quality report recorded for this backend.</p></section>';
@@ -95,7 +178,7 @@ function renderQualityReports(reports) {
     box.className = 'section-box';
     const warningList = report.warnings?.length ? report.warnings.map((item) => `<li>${escapeHtml(item)}</li>`).join('') : '<li>none</li>';
     const errorList = report.errors?.length ? report.errors.map((item) => `<li>${escapeHtml(item)}</li>`).join('') : '<li>none</li>';
-    box.innerHTML = `<h3>${report.frameId} / ${report.passed ? 'passed' : 'failed'}</h3><p>Errors</p><ul>${errorList}</ul><p>Warnings</p><ul>${warningList}</ul>`;
+    box.innerHTML = `<h3>${escapeHtml(report.frameId)} / ${report.passed ? 'passed' : 'failed'}</h3><p>Errors</p><ul>${errorList}</ul><p>Warnings</p><ul>${warningList}</ul>`;
     elements.qualityReports.append(box);
   });
 }
@@ -110,10 +193,26 @@ async function copyCommand() {
   window.setTimeout(() => { elements.copy.textContent = 'Copy'; }, 900);
 }
 
+function setLoading(isLoading, message) {
+  elements.generateButton.disabled = isLoading;
+  elements.generateButton.textContent = isLoading ? 'Generating...' : 'Generate Asset';
+  if (message) setStatus(message, 'pending');
+}
+
+function setStatus(message, tone = 'pending') {
+  elements.formStatus.textContent = message;
+  elements.formStatus.dataset.tone = tone;
+}
+
+function parseSize(value) {
+  const [width, height] = String(value).split('x').map((item) => Number(item));
+  return { width, height };
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
 }
 
 init().catch((error) => {
-  document.body.innerHTML = `<main class="shell"><section class="preview-card"><h1>Gallery load failed</h1><p>${escapeHtml(error.message)}</p></section></main>`;
+  document.body.innerHTML = `<main class="shell"><section class="preview-card"><h1>Workbench load failed</h1><p>${escapeHtml(error.message)}</p></section></main>`;
 });

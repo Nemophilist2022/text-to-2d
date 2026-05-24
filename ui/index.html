@@ -16,7 +16,7 @@
       <div>
         <p class="eyebrow">Text → Preset → Prompt → Quality → Export</p>
         <h1 id="hero-title">Text-to-2D Asset Workbench</h1>
-        <p class="hero-copy">面向 2D 游戏开发流程的参数化素材生成展示台。静态页面只读取 demo manifest，不保存密钥，不直接调用 API。</p>
+        <p class="hero-copy">输入一句话，点击生成，走本地 codex-local 后端完成可观察的 2D 游戏素材闭环。真实 API 暂时可选，不作为当前验收依赖。</p>
       </div>
       <div class="command-card">
         <span class="label">CLI</span>
@@ -25,16 +25,53 @@
       </div>
     </section>
 
-    <section class="control-panel" aria-label="Asset controls">
-      <label>Text<input id="text-input" readonly></label>
-      <label>Asset Type<input id="asset-type" readonly></label>
-      <label>Style<input id="style" readonly></label>
-      <label>Size<input id="size" readonly></label>
-      <label>Backend<input id="backend" readonly></label>
-    </section>
+    <form class="control-panel" id="generate-form" aria-label="Generate asset form">
+      <label class="text-field">Text
+        <input id="text-input" name="text" value="像素风宝石道具" autocomplete="off">
+      </label>
+      <label>Asset Type
+        <select id="asset-type" name="assetType">
+          <option value="character">character</option>
+          <option value="monster">monster</option>
+          <option value="item" selected>item</option>
+          <option value="map-tile">map-tile</option>
+          <option value="ui-icon">ui-icon</option>
+        </select>
+      </label>
+      <label>Style
+        <select id="style" name="style">
+          <option value="pixel" selected>pixel</option>
+          <option value="chibi">chibi</option>
+          <option value="dark">dark</option>
+          <option value="chinese">chinese</option>
+          <option value="sci-fi">sci-fi</option>
+        </select>
+      </label>
+      <label>Size
+        <select id="size" name="size">
+          <option value="32x32" selected>32x32</option>
+          <option value="64x64">64x64</option>
+          <option value="128x128">128x128</option>
+        </select>
+      </label>
+      <label>Backend
+        <select id="backend" name="backendId">
+          <option value="codex-local" selected>codex-local</option>
+          <option value="prebuilt">prebuilt</option>
+          <option value="mock-ai">mock-ai</option>
+          <option value="chat-svg">chat-svg</option>
+        </select>
+      </label>
+      <label class="toggle-field">
+        <input id="force-regenerate" name="forceRegenerate" type="checkbox">
+        Force regenerate
+      </label>
+      <button class="generate-button" id="generate-button" type="submit">Generate Asset</button>
+      <p class="form-status" id="form-status" role="status">Ready. API limit safe mode: codex-local default.</p>
+    </form>
 
     <section class="layout-grid">
-      <nav class="asset-list" id="asset-list" aria-label="Demo assets"></nav>
+      <nav class="asset-list" id="asset-list" aria-label="Generated and demo assets"></nav>
       <article class="preview-card">
         <div class="preview-header">
           <div>

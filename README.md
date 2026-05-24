@@ -10,7 +10,8 @@
 - Quality Gate：输出 errors / warnings / checks，错误阻断，warning 进入 `run.json`。
 - 后端：`codex-local`、`mock-ai`、`prebuilt`、`chat-svg`、`image-api`。
 - 导出：individual frames、`spritesheet.svg`、`atlas.json`、`run.json`。
-- 静态 UI：`ui/index.html` 可直接查看 5 类 demo gallery。
+- Web 工作台：`src/server/app-server.mjs` 可在页面输入文本并一键生成，默认走离线 `codex-local`。
+- 静态 Gallery：`ui/index.html` 在无服务模式下仍可查看 5 类 demo gallery。
 
 ## 快速验证
 
@@ -18,6 +19,43 @@
 cd E:\七牛云\.worktrees\mvp-plus
 E:\node_22\node.exe --test "test\*.test.mjs"
 ```
+
+## 运行一键生成 Web 工作台
+
+当前 API 已可能限额，推荐先用离线后端验证页面闭环：
+
+```powershell
+E:\node_22\node.exe src\server\app-server.mjs `
+  --workspace demo-workspace-web `
+  --port 8787 `
+  --backend codex-local
+```
+
+打开：
+
+```text
+http://127.0.0.1:8787
+```
+
+页面可直接输入：
+
+```text
+像素风宝石道具
+像素风骑士角色
+草地地图块
+红心 UI 图标
+```
+
+点击 `Generate Asset` 后会生成：
+
+```text
+demo-workspace-web/exports/<assetId>/frames/*.svg
+demo-workspace-web/exports/<assetId>/spritesheet.svg
+demo-workspace-web/exports/<assetId>/atlas.json
+demo-workspace-web/exports/<assetId>/run.json
+```
+
+同参数第二次点击应显示 `cache=hit`。
 
 ## 运行 CLI Demo
 
@@ -61,7 +99,7 @@ E:\node_22\node.exe src\demo\demo-gallery.mjs `
 ui/index.html
 ```
 
-页面只读取 `ui/demo-gallery.json` 和 sample exports，不会调用 API，也不会读取密钥。
+页面在直接打开文件时只读取 `ui/demo-gallery.json` 和 sample exports，不会调用 API，也不会读取密钥。
 
 ## 密钥规则
 
