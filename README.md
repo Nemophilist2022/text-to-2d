@@ -17,7 +17,7 @@ Text / Parameters
 
 ## Demo Video
 
-<video src="docs/assets/demo-video.mp4" controls width="720"></video>
+<video src="https://raw.githubusercontent.com/Nemophilist2022/text-to-2d/main/docs/assets/demo-video.mp4" controls width="720"></video>
 
 If the inline player is not rendered by GitHub, open the video directly: [docs/assets/demo-video.mp4](docs/assets/demo-video.mp4)
 
