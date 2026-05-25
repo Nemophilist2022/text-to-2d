@@ -6,6 +6,7 @@ const elements = {
   title: document.querySelector('#asset-title'),
   image: document.querySelector('#sprite-preview'),
   cache: document.querySelector('#cache-status'),
+  downloadFrame: document.querySelector('#download-frame'),
   text: document.querySelector('#text-input'),
   assetType: document.querySelector('#asset-type'),
   style: document.querySelector('#style'),
@@ -164,6 +165,9 @@ function renderSelected() {
     elements.title.textContent = 'No asset';
     elements.image.removeAttribute('src');
     elements.cache.textContent = 'none';
+    elements.downloadFrame.href = '#';
+    elements.downloadFrame.download = 'asset.svg';
+    elements.downloadFrame.setAttribute('aria-disabled', 'true');
     return;
   }
 
@@ -179,6 +183,9 @@ function renderSelected() {
   elements.subject.textContent = asset.subject;
   elements.framePath.textContent = asset.paths.frame;
   elements.atlasPath.textContent = asset.paths.atlas;
+  elements.downloadFrame.href = asset.paths.frame;
+  elements.downloadFrame.download = `${safeFileName(asset.assetId)}-${safeFileName(asset.paths.frame.split('/').pop() || 'frame.svg')}`;
+  elements.downloadFrame.removeAttribute('aria-disabled');
   elements.command.textContent = buildCommand({ ...asset, backendId: elements.backend.value });
   renderPromptSections(asset.promptSections);
   renderQualityReports(asset.qualityReports);
@@ -238,6 +245,10 @@ function setStatus(message, tone = 'pending') {
 function parseSize(value) {
   const [width, height] = String(value).split('x').map((item) => Number(item));
   return { width, height };
+}
+
+function safeFileName(value) {
+  return String(value).replace(/[^a-zA-Z0-9._-]/g, '_');
 }
 
 function escapeHtml(value) {

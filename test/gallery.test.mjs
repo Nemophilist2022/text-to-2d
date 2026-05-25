@@ -45,9 +45,13 @@ test('static workbench files and bundled gallery manifest are present', async ()
   const manifest = JSON.parse(await readFile(join(root, 'ui', 'demo-gallery.json'), 'utf8'));
 
   assert.match(html, /Text-to-2D Asset Workbench/);
+  assert.match(html, /id="download-frame"/);
   assert.match(css, /#020617/);
   assert.match(css, /#22C55E/i);
+  assert.match(css, /\.download-button/);
   assert.match(js, /demo-gallery\.json/);
+  assert.match(js, /downloadFrame/);
+  assert.match(js, /safeFileName/);
   assert.match(js, /window\.DEMO_GALLERY/);
   assert.match(galleryJs, /window\.DEMO_GALLERY/);
   assert.equal(manifest.assets.length, 5);
