@@ -1,4 +1,4 @@
-﻿const state = { gallery: { assets: [] }, selectedIndex: 0, generatedCount: 0 };
+﻿const state = { gallery: { assets: [] }, selectedIndex: 0, generatedCount: 0, serverConfig: null };
 
 const elements = {
   form: document.querySelector('#generate-form'),
@@ -25,11 +25,43 @@ const elements = {
 };
 
 async function init() {
+  state.serverConfig = await loadServerConfig();
   state.gallery = await loadGallery();
   renderList();
   renderSelected();
+  applyServerConfig(state.serverConfig);
   elements.copy.addEventListener('click', copyCommand);
   elements.form.addEventListener('submit', generateAsset);
+  elements.backend.addEventListener('change', () => updateBackendModeStatus(elements.backend.value));
+}
+
+async function loadServerConfig() {
+  try {
+    const response = await fetch('/api/health', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Failed to load server health: ${response.status}`);
+    return response.json();
+  } catch (error) {
+    return { defaultBackendId: elements.backend.value, offlineStaticMode: true };
+  }
+}
+
+function applyServerConfig(config) {
+  if (config?.defaultBackendId && hasBackendOption(config.defaultBackendId)) {
+    elements.backend.value = config.defaultBackendId;
+  }
+  updateBackendModeStatus(elements.backend.value);
+}
+
+function hasBackendOption(backendId) {
+  return Array.from(elements.backend.options).some((option) => option.value === backendId);
+}
+
+function updateBackendModeStatus(backendId) {
+  if (backendId === 'chat-svg' || backendId === 'image-api') {
+    setStatus(`Real API mode enabled: ${backendId}. This will call your configured API and consume quota.`, 'pending');
+    return;
+  }
+  setStatus(`Offline mode enabled: ${backendId}. No model API call will be made.`, 'success');
 }
 
 async function loadGallery() {
@@ -45,7 +77,7 @@ async function loadGallery() {
 
 async function generateAsset(event) {
   event.preventDefault();
-  setLoading(true, 'Generating with local pipeline...');
+  setLoading(true, `Generating with ${elements.backend.value}...`);
 
   const payload = {
     text: elements.text.value.trim(),
@@ -74,7 +106,7 @@ async function generateAsset(event) {
     renderSelected();
     setStatus(`Generated ${asset.assetId}. cache=${asset.cacheStatus}`, 'success');
   } catch (error) {
-    setStatus(`${error.message}. 当前 API 限额时请使用 codex-local。`, 'error');
+    setStatus(`${error.message}. 如果 API 限额，请临时切回 codex-local。`, 'error');
   } finally {
     setLoading(false);
   }
@@ -143,12 +175,11 @@ function renderSelected() {
   elements.assetType.value = asset.assetType;
   elements.style.value = asset.style;
   elements.size.value = `${asset.size.width}x${asset.size.height}`;
-  elements.backend.value = asset.backendId;
   elements.preset.textContent = asset.presetId;
   elements.subject.textContent = asset.subject;
   elements.framePath.textContent = asset.paths.frame;
   elements.atlasPath.textContent = asset.paths.atlas;
-  elements.command.textContent = buildCommand(asset);
+  elements.command.textContent = buildCommand({ ...asset, backendId: elements.backend.value });
   renderPromptSections(asset.promptSections);
   renderQualityReports(asset.qualityReports);
 }

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -16,7 +16,7 @@
       <div>
         <p class="eyebrow">Text → Preset → Prompt → Quality → Export</p>
         <h1 id="hero-title">Text-to-2D Asset Workbench</h1>
-        <p class="hero-copy">输入一句话，点击生成，走本地 codex-local 后端完成可观察的 2D 游戏素材闭环。真实 API 暂时可选，不作为当前验收依赖。</p>
+        <p class="hero-copy">输入一句话，点击生成。用 --backend chat-svg 启动时会调用真实大模型 API；用 codex-local 启动时走离线演示。</p>
       </div>
       <div class="command-card">
         <span class="label">CLI</span>
@@ -67,7 +67,7 @@
         Force regenerate
       </label>
       <button class="generate-button" id="generate-button" type="submit">Generate Asset</button>
-      <p class="form-status" id="form-status" role="status">Ready. API limit safe mode: codex-local default.</p>
+      <p class="form-status" id="form-status" role="status">Ready. Backend follows server mode.</p>
     </form>
 
     <section class="layout-grid">
