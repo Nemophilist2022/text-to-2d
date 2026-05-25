@@ -54,6 +54,7 @@ export function createGenerationPacket(recipe) {
 
   return {
     requestId,
+    sourceText: recipe.text,
     assetId: recipe.assetId ?? `${recipe.subject}-${recipe.animation ?? 'idle'}`,
     assetType: recipe.assetType,
     subject: recipe.subject,

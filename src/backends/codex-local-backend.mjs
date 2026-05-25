@@ -50,6 +50,7 @@ function subjectShape(subject, width, height, offset, color) {
   if (subject === 'gem') return gemShape(width, height);
   if (subject === 'heart') return heartShape(width, height);
   if (subject === 'grass') return grassTileShape(width, height);
+  if (subject === 'wooden-house') return woodenHouseShape(width, height);
   if (subject === 'energy-core') {
     return `<polygon points="${width / 2},${height * 0.2} ${width * 0.72},${height / 2} ${width / 2},${height * 0.8} ${width * 0.28},${height / 2}" fill="${color.primary}"/><circle cx="${width / 2}" cy="${height / 2}" r="${Math.max(4, width * 0.12)}" fill="${color.accent}"/>`;
   }
@@ -94,6 +95,17 @@ function grassTileShape(width, height) {
     blades.push(`<path d="M ${x} ${height} L ${x + 2} ${height - 8} L ${x + 4} ${height}" stroke="#65a30d" stroke-width="2" fill="none"/>`);
   }
   return [`<rect x="0" y="${height - 4}" width="${width}" height="4" fill="#166534"/>`, ...blades, `<path d="M0 ${height * 0.55} H${width}" stroke="#22c55e" stroke-width="2"/>`].join('');
+}
+
+function woodenHouseShape(width, height) {
+  return [
+    `<polygon points="${width * 0.16},${height * 0.42} ${width * 0.5},${height * 0.14} ${width * 0.84},${height * 0.42}" fill="#7c2d12"/>`,
+    `<rect x="${width * 0.24}" y="${height * 0.4}" width="${width * 0.52}" height="${height * 0.42}" fill="#b45309"/>`,
+    `<rect x="${width * 0.44}" y="${height * 0.58}" width="${width * 0.14}" height="${height * 0.24}" fill="#422006"/>`,
+    `<rect x="${width * 0.28}" y="${height * 0.5}" width="${width * 0.12}" height="${height * 0.1}" fill="#93c5fd"/>`,
+    `<rect x="${width * 0.61}" y="${height * 0.5}" width="${width * 0.12}" height="${height * 0.1}" fill="#fde68a"/>`,
+    `<path d="M ${width * 0.18} ${height * 0.82} H ${width * 0.82}" stroke="#65a30d" stroke-width="3"/>`,
+  ].join('');
 }
 
 function styleColor(style) {

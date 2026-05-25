@@ -136,9 +136,51 @@ test('image api backend converts chat-completions image response into svg frame 
   assert.match(result.frames[0].content, /data:image\/png;base64/);
   assert.equal(calls.length, 4);
   assert.equal(calls[0].url, 'https://api.example.test/v1/chat/completions');
-  assert.equal(JSON.parse(calls[0].options.body).model, 'gpt-image-2');
-  assert.equal(JSON.parse(calls[0].options.body).messages[0].role, 'user');
+  const requestBody = JSON.parse(calls[0].options.body);
+  assert.equal(requestBody.model, 'gpt-image-2');
+  assert.equal(requestBody.messages[0].role, 'user');
+  assert.match(requestBody.messages[0].content, /2D game asset image/);
+  assert.doesNotMatch(requestBody.messages[0].content, /shape-rendering/);
+  assert.match(result.frames[0].content, /preserveAspectRatio="xMidYMid meet"/);
   assert.equal(calls[0].options.headers.Authorization, 'Bearer test-key');
+});
+
+test('image api backend embeds returned image urls so preview exports are self-contained', async () => {
+  const calls = [];
+  const backend = createImageApiBackend({
+    config: {
+      baseUrl: 'https://api.example.test',
+      apiKey: 'test-key',
+      model: 'gpt-image-2',
+      endpointProtocol: 'chat-completions',
+      requestSize: '1024x1024',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      if (String(url).includes('/v1/chat/completions')) {
+        return {
+          ok: true,
+          async json() {
+            return { choices: [{ message: { content: '![image](https://cdn.example.test/generated.png)' } }] };
+          },
+        };
+      }
+      return {
+        ok: true,
+        headers: { get: () => 'image/png' },
+        async arrayBuffer() {
+          return Buffer.from('png-bytes');
+        },
+      };
+    },
+  });
+
+  const result = await backend.generate({ request, packet });
+
+  assert.equal(calls[0].url, 'https://api.example.test/v1/chat/completions');
+  assert.equal(calls[1].url, 'https://cdn.example.test/generated.png');
+  assert.match(result.frames[0].content, /data:image\/png;base64/);
+  assert.doesNotMatch(result.frames[0].content, /https:\/\/cdn\.example\.test/);
 });
 
 test('image api backend fails clearly when api key is missing', async () => {

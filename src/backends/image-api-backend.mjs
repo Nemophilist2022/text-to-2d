@@ -15,15 +15,16 @@ export function createImageApiBackend({ config = loadImageApiConfig(), fetchImpl
 
       const frames = [];
       for (const [order, frameId] of packet.frameLabels.entries()) {
-        const prompt = `${packet.prompt}, frame ${order + 1}/${packet.frameCount}, frame label ${frameId}`;
+        const prompt = buildImagePrompt(packet, { order, frameId });
         const apiImage = await requestImage({ config, fetchImpl, prompt });
+        const href = await materializeImageHref({ href: apiImage.href, fetchImpl });
         frames.push({
           frameId,
           order,
           fileName: `${frameId}.svg`,
           mediaType: 'image/svg+xml',
           content: wrapApiImageAsSvg({
-            href: apiImage.href,
+            href,
             width: packet.size.width,
             height: packet.size.height,
             prompt,
@@ -188,11 +189,43 @@ function extractImageFromImageData(value, missingMessage = null) {
 
 function wrapApiImageAsSvg({ href, width, height, prompt }) {
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" class="image-api" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`,
-    `<image href="${escapeXml(href)}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice"/>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" class="image-api" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMid meet">`,
+    `<rect width="100%" height="100%" fill="none"/>`,
+    `<image href="${escapeXml(href)}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet"/>`,
     `<desc>${escapeXml(prompt)}</desc>`,
     `</svg>`,
   ].join('');
+}
+
+function buildImagePrompt(packet, { order, frameId }) {
+  const sectionText = (packet.promptSections ?? [])
+    .filter((section) => section.id !== 'global-output')
+    .flatMap((section) => section.rules ?? [])
+    .join(' ');
+  return [
+    `Generate a ${packet.size.width}x${packet.size.height} 2D game asset image.`,
+    packet.sourceText ? `User request: ${packet.sourceText}.` : '',
+    `Asset type: ${packet.assetType}. Subject: ${packet.subject}. Visual archetype: ${packet.visualArchetype}.`,
+    `Style: ${packet.style}.`,
+    sectionText,
+    'Single clear asset only. Centered in frame. No text labels. No UI mockup. No document icon. No paper sheet.',
+    'Do not render SVG code, browser screenshots, canvas frames, or editor UI.',
+    `Frame ${order + 1}/${packet.frameCount}. Frame label: ${frameId}.`,
+    `Negative prompt: ${packet.negativePrompt}.`,
+  ].filter(Boolean).join(' ');
+}
+
+async function materializeImageHref({ href, fetchImpl }) {
+  if (!String(href).startsWith('http://') && !String(href).startsWith('https://')) return href;
+  try {
+    const response = await fetchImpl(href);
+    if (!response.ok || typeof response.arrayBuffer !== 'function') return href;
+    const contentType = response.headers?.get?.('content-type') ?? 'image/png';
+    const buffer = Buffer.from(await response.arrayBuffer());
+    return `data:${contentType};base64,${buffer.toString('base64')}`;
+  } catch {
+    return href;
+  }
 }
 
 function escapeXml(value) {

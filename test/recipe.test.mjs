@@ -131,6 +131,23 @@ test('unknown subject falls back to generic preset for selected asset type', () 
   assert.equal(recipe.subject, 'item');
 });
 
+test('auto asset type detects wooden house as environment prop instead of character', () => {
+  const recipe = compileAssetRecipe({
+    text: '\u4e00\u5ea7\u4e2d\u4e16\u7eaa\u6728\u5c4b\uff0c\u6b63\u9762\u89c6\u89d2\uff0c2D \u6a2a\u7248\u6e38\u620f\u573a\u666f\u7d20\u6750',
+    selections: { assetType: 'auto', style: 'pixel', size: '64x64' },
+  });
+  const packet = createGenerationPacket(recipe);
+
+  assert.equal(recipe.assetType, 'environment');
+  assert.equal(recipe.subject, 'wooden-house');
+  assert.equal(recipe.presetId, 'wooden_house_environment');
+  assert.equal(recipe.assetId, 'wooden-house-idle');
+  assert.equal(recipe.frameCount, 1);
+  assert.match(packet.prompt, /Game environment prop/);
+  assert.match(packet.prompt, /wooden house/);
+  assert.doesNotMatch(packet.prompt, /Game character sprite/);
+});
+
 test('prompt compiler builds sections without subject-specific special cases', () => {
   const recipe = compileAssetRecipe({
     text: '\u7ea2\u5fc3 UI \u56fe\u6807',
@@ -157,7 +174,7 @@ test('prompt compiler builds sections without subject-specific special cases', (
 });
 
 test('visual presets carry v2 composition palette readability and svg shape hints', () => {
-  const requiredPresetIds = ['knight_character', 'slime_monster', 'gem_item', 'grass_tile', 'heart_ui_icon'];
+  const requiredPresetIds = ['knight_character', 'slime_monster', 'gem_item', 'grass_tile', 'heart_ui_icon', 'wooden_house_environment'];
 
   for (const presetId of requiredPresetIds) {
     const preset = visualPresets.find((candidate) => candidate.id === presetId);

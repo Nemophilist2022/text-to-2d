@@ -175,10 +175,6 @@ function renderSelected() {
   elements.image.src = asset.paths.frame;
   elements.image.alt = `${asset.assetId} generated preview`;
   elements.cache.textContent = asset.cacheStatus;
-  elements.text.value = asset.text;
-  elements.assetType.value = asset.assetType;
-  elements.style.value = asset.style;
-  elements.size.value = `${asset.size.width}x${asset.size.height}`;
   elements.preset.textContent = asset.presetId;
   elements.subject.textContent = asset.subject;
   elements.framePath.textContent = asset.paths.frame;

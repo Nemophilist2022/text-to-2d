@@ -4,10 +4,10 @@ import { relative, sep } from 'node:path';
 import { runAssetJob } from '../core/orchestrator.mjs';
 import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
 
-export function createAssetRequestFromInput({ text = '', assetType = 'character', style = 'pixel', size = '64x64', backendId }) {
+export function createAssetRequestFromInput({ text = '', assetType = 'auto', style = 'pixel', size = '64x64', backendId }) {
   const recipe = compileAssetRecipe({
     text,
-    selections: { assetType, style, size },
+    selections: { assetType: assetType === 'auto' ? undefined : assetType, style, size },
   });
   const request = buildAssetRequestFromRecipe(recipe, { backendId });
   return { recipe, request };
@@ -26,7 +26,7 @@ export async function runAssetGeneration({ body, workspace, backends, defaultBac
 
   const { recipe, request } = createAssetRequestFromInput({
     text: body.text || '',
-    assetType: body.assetType || 'character',
+    assetType: body.assetType || 'auto',
     style: body.style || 'pixel',
     size: body.size || '64x64',
     backendId,

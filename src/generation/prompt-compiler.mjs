@@ -15,6 +15,7 @@ const assetTypeRules = {
   character: ['Game character sprite.', 'Readable body/head silhouette.', 'Keep animation frames consistent.', 'Feet or base should sit near bottom center.'],
   monster: ['Game monster sprite.', 'Readable creature silhouette.', 'Express simple personality through shape.', 'Keep the creature as the only main subject.'],
   item: ['Game item pickup.', 'Use a centered object composition.', 'Center the object with a strong item silhouette.', 'No scenery or character body.'],
+  environment: ['Game environment prop or scene object.', 'Use a readable standalone prop silhouette.', 'Center the prop in frame unless it is a background piece.', 'No character body or UI label.'],
   'map-tile': ['Map tile asset.', 'Use tile-filling rules instead of centered object rules.', 'Fill the tile footprint with edge-safe patterns.', 'Avoid single floating props.'],
   'ui-icon': ['UI icon asset.', 'Use a centered icon composition.', 'Simple high-contrast icon shape.', 'Readable in a game HUD.'],
 };
@@ -23,6 +24,7 @@ const assetTypeForbidden = {
   character: ['landscape-only image'],
   monster: ['friendly human character'],
   item: ['full scene', 'large background prop'],
+  environment: ['character sprite', 'inventory icon only', 'document icon', 'paper sheet'],
   'map-tile': ['floating object', 'character sprite'],
   'ui-icon': ['text label', 'complex scene'],
 };

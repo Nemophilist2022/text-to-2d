@@ -32,4 +32,6 @@ test('ui reads server health so selected backend follows real api server mode', 
   assert.match(js, /applyServerConfig/);
   assert.match(html, /chat-svg/);
   assert.match(html, /image-api/);
+  assert.match(html, /auto-detect/);
+  assert.match(html, /environment/);
 });

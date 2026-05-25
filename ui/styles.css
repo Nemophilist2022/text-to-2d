@@ -206,7 +206,14 @@ input, select {
   border: 1px solid var(--line);
 }
 
-.sprite-stage img { width: min(70%, 320px); image-rendering: pixelated; }
+.sprite-stage img {
+  width: auto;
+  height: auto;
+  max-width: min(86%, 420px);
+  max-height: 420px;
+  object-fit: contain;
+  image-rendering: auto;
+}
 .metadata-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 0; }
 .metadata-grid div, .section-box { padding: 12px; border-radius: 12px; background: rgba(30, 41, 59, 0.72); border: 1px solid var(--line); }
 dd { margin: 0; color: var(--text); overflow-wrap: anywhere; }
