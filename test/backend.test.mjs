@@ -93,25 +93,28 @@ test('api backend placeholder refuses real generation with clear configuration e
   );
 });
 
-test('image api config reads endpoint model and key from environment without hardcoding secrets', () => {
+test('image api config reads chat-completions endpoint model and key without hardcoding secrets', () => {
   const config = loadImageApiConfig({
-    IMAGE_API_BASE_URL: 'https://api.vip1129.cc/',
+    IMAGE_API_BASE_URL: 'http://216.234.142.96:3000',
     IMAGE_API_KEY: 'test-key',
-    IMAGE_API_MODEL: 'image2',
+    IMAGE_API_MODEL: 'gpt-image-2',
+    IMAGE_API_ENDPOINT_PROTOCOL: 'chat-completions',
   });
 
-  assert.equal(config.baseUrl, 'https://api.vip1129.cc');
+  assert.equal(config.baseUrl, 'http://216.234.142.96:3000');
   assert.equal(config.apiKey, 'test-key');
-  assert.equal(config.model, 'image2');
+  assert.equal(config.model, 'gpt-image-2');
+  assert.equal(config.endpointProtocol, 'chat-completions');
 });
 
-test('image api backend converts OpenAI-compatible b64 response into svg frame contract', async () => {
+test('image api backend converts chat-completions image response into svg frame contract', async () => {
   const calls = [];
   const backend = createImageApiBackend({
     config: {
       baseUrl: 'https://api.example.test',
       apiKey: 'test-key',
-      model: 'image2',
+      model: 'gpt-image-2',
+      endpointProtocol: 'chat-completions',
       requestSize: '1024x1024',
     },
     fetchImpl: async (url, options) => {
@@ -119,7 +122,7 @@ test('image api backend converts OpenAI-compatible b64 response into svg frame c
       return {
         ok: true,
         async json() {
-          return { data: [{ b64_json: Buffer.from('fake-png').toString('base64') }] };
+          return { choices: [{ message: { content: JSON.stringify({ data: [{ b64_json: Buffer.from('fake-png').toString('base64') }] }) } }] };
         },
       };
     },
@@ -128,12 +131,13 @@ test('image api backend converts OpenAI-compatible b64 response into svg frame c
   const result = await backend.generate({ request, packet });
 
   assert.equal(result.backendId, 'image-api');
-  assert.equal(result.backendVersion, 'image2');
+  assert.equal(result.backendVersion, 'gpt-image-2');
   assert.equal(result.frames.length, 4);
   assert.match(result.frames[0].content, /data:image\/png;base64/);
   assert.equal(calls.length, 4);
-  assert.equal(calls[0].url, 'https://api.example.test/v1/images/generations');
-  assert.equal(JSON.parse(calls[0].options.body).model, 'image2');
+  assert.equal(calls[0].url, 'https://api.example.test/v1/chat/completions');
+  assert.equal(JSON.parse(calls[0].options.body).model, 'gpt-image-2');
+  assert.equal(JSON.parse(calls[0].options.body).messages[0].role, 'user');
   assert.equal(calls[0].options.headers.Authorization, 'Bearer test-key');
 });
 
