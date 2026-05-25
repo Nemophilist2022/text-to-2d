@@ -15,6 +15,12 @@ Text / Parameters
   -> Web Preview
 ```
 
+## Demo Video
+
+<video src="docs/assets/demo-video.mp4" controls width="720"></video>
+
+If the inline player is not rendered by GitHub, open the video directly: [docs/assets/demo-video.mp4](docs/assets/demo-video.mp4)
+
 ## 当前能力
 
 - 文本到资产概念：支持 `auto-detect`，可从“木屋、宝石、骑士、史莱姆、草地、红心”等文本中识别素材语义。
