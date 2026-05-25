@@ -12,46 +12,48 @@ export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl =
       if (!config.apiKey) throw new Error('CHAT_API_KEY or IMAGE_API_KEY is required for chat-svg backend');
       if (!fetchImpl) throw new Error('fetch is required for chat-svg backend');
 
-      const response = await fetchImpl(`${config.baseUrl}/v1/chat/completions`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${config.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: config.model,
-          messages: buildMessages(packet),
-        }),
-      });
-
-      if (!response.ok) {
-        const body = typeof response.text === 'function' ? await response.text() : '';
-        throw new Error(`chat-svg request failed: HTTP ${response.status ?? 'unknown'} ${body}`.trim());
-      }
-
-      const json = await response.json();
-      const content = json.choices?.[0]?.message?.content;
-      if (!content) throw new Error('chat-svg response missing choices[0].message.content');
-      const parsed = parseFrameJson(content);
       const qualityReports = [];
+      const frames = [];
 
-      const frames = packet.frameLabels.map((frameId, order) => {
-        const frame = parsed.frames.find((candidate) => candidate.frameId === frameId);
+      for (const [order, frameId] of packet.frameLabels.entries()) {
+        const framePacket = isolateFramePacket(packet, frameId);
+        const response = await fetchImpl(`${config.baseUrl}/v1/chat/completions`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${config.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: config.model,
+            messages: buildMessages(framePacket),
+          }),
+        });
+
+        if (!response.ok) {
+          const body = typeof response.text === 'function' ? await response.text() : '';
+          throw new Error(formatChatSvgHttpError(response.status, body, frameId));
+        }
+
+        const json = await response.json();
+        const content = json.choices?.[0]?.message?.content;
+        if (!content) throw new Error(`chat-svg response missing choices[0].message.content for frame: ${frameId}`);
+        const parsed = parseFrameJson(content);
+        const frame = parsed.frames?.find((candidate) => candidate.frameId === frameId) ?? parsed.frames?.[0];
         if (!frame?.svg) throw new Error(`chat-svg response missing svg for frame: ${frameId}`);
-        const content = normalizeSvg(frame.svg, packet.size);
-        const qualityReport = validateSvgQuality({ svg: content, packet, frameId });
+        const svg = normalizeSvg(frame.svg, packet.size);
+        const qualityReport = validateSvgQuality({ svg, packet, frameId });
         qualityReports.push(qualityReport);
         if (!qualityReport.passed) {
           throw new Error(`chat-svg quality gate failed for ${frameId}: ${qualityReport.errors.join('; ')}`);
         }
-        return {
+        frames.push({
           frameId,
           order,
           fileName: `${frameId}.svg`,
           mediaType: 'image/svg+xml',
-          content,
-        };
-      });
+          content: svg,
+        });
+      }
 
       return {
         backendId: 'chat-svg',
@@ -77,6 +79,33 @@ export function loadChatSvgConfig(env = { ...loadLocalEnv(), ...process.env }) {
     apiKey: env.CHAT_API_KEY ?? env.IMAGE_API_KEY,
     model: env.CHAT_API_MODEL ?? 'gpt-5.5',
   };
+}
+
+
+function isolateFramePacket(packet, frameId) {
+  return {
+    ...packet,
+    frameCount: 1,
+    frameLabels: [frameId],
+    concept: packet.concept ? {
+      ...packet.concept,
+      frameCount: 1,
+      frameLabels: [frameId],
+    } : packet.concept,
+    outputContract: {
+      ...packet.outputContract,
+      frameCount: 1,
+      frameLabels: [frameId],
+    },
+  };
+}
+
+function formatChatSvgHttpError(status, body, frameId) {
+  const raw = `chat-svg request failed for ${frameId}: HTTP ${status ?? 'unknown'} ${body}`.trim();
+  if (status === 504) {
+    return `${raw}. Upstream gateway timed out while generating SVG. Retry a smaller 32x32/item request, or reduce frameCount; multi-frame requests are sent frame-by-frame to lower timeout risk.`;
+  }
+  return raw;
 }
 
 function buildMessages(packet) {

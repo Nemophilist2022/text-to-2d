@@ -26,7 +26,7 @@ const request = {
 };
 
 const packet = createGenerationPacket({
-  text: '生成一个像素风骑士角色',
+  text: '鐢熸垚涓€涓儚绱犻楠戝＋瑙掕壊',
   assetId: 'knight-idle',
   assetType: 'character',
   subject: 'knight',
@@ -159,7 +159,7 @@ test('chat svg config reads chat model from environment without hardcoding secre
   assert.equal(config.model, 'gpt-5.5');
 });
 
-test('chat svg backend parses strict json frames from chat completions', async () => {
+test('chat svg backend requests one API call per frame to reduce gateway timeout risk', async () => {
   const calls = [];
   const backend = createChatSvgBackend({
     config: {
@@ -195,9 +195,11 @@ test('chat svg backend parses strict json frames from chat completions', async (
   assert.equal(result.backendVersion, 'gpt-5.5');
   assert.equal(result.frames.length, 4);
   assert.match(result.frames[0].content, /data-frame="idle_0"/);
-  assert.equal(calls.length, 1);
+  assert.equal(calls.length, 4);
   assert.equal(calls[0].url, 'https://api.example.test/v1/chat/completions');
   assert.equal(JSON.parse(calls[0].options.body).model, 'gpt-5.5');
+  assert.match(calls[0].options.body, /idle_0/);
+  assert.doesNotMatch(calls[0].options.body, /idle_1/);
 });
 
 test('chat svg request body includes gem visual preset constraints', async () => {
