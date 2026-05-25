@@ -1,20 +1,14 @@
-﻿import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { cwd, argv } from 'node:process';
-import { dirname, extname, join, relative, resolve, sep } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { runAssetJob } from '../core/orchestrator.mjs';
-import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
-import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
-import { createCodexLocalBackend } from '../backends/codex-local-backend.mjs';
-import { createImageApiBackend } from '../backends/image-api-backend.mjs';
-import { createChatSvgBackend } from '../backends/chat-svg-backend.mjs';
-import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
+import { createBackendRegistry } from '../backends/registry.mjs';
+import { handleGenerate } from './generate-handler.mjs';
+import { serveUiFile, serveWorkspaceFile } from './static-handler.mjs';
+import { sendJson } from './http-utils.mjs';
 
 const DEFAULT_BACKEND_ID = 'codex-local';
-const BODY_LIMIT_BYTES = 64 * 1024;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultUiRoot = resolve(__dirname, '..', '..', 'ui');
 
@@ -25,7 +19,7 @@ export function createWorkbenchServer({
 } = {}) {
   const resolvedWorkspace = resolve(workspace);
   const resolvedUiRoot = resolve(uiRoot);
-  const backends = createBackends();
+  const backends = createBackendRegistry();
 
   return createServer(async (request, response) => {
     try {
@@ -61,154 +55,6 @@ export function createWorkbenchServer({
       });
     }
   });
-}
-
-async function handleGenerate({ request, response, workspace, defaultBackendId, backends }) {
-  const body = await readJsonBody(request);
-  const backendId = String(body.backendId || defaultBackendId);
-
-  if (!backends[backendId]) {
-    return sendJson(response, 400, {
-      status: 'failed',
-      error: { message: `Backend not found: ${backendId}` },
-      fallbackBackendId: defaultBackendId,
-    });
-  }
-
-  try {
-    const selections = {
-      assetType: body.assetType || 'character',
-      style: body.style || 'pixel',
-      size: body.size || '64x64',
-    };
-    const recipe = compileAssetRecipe({ text: body.text || '', selections });
-    const assetRequest = buildAssetRequestFromRecipe(recipe, { backendId });
-    const result = await runAssetJob({
-      ...assetRequest,
-      forceRegenerate: Boolean(body.forceRegenerate),
-    }, { workspace, backends });
-
-    if (result.status !== 'success') {
-      return sendJson(response, 400, {
-        status: 'failed',
-        error: result.errors?.[0] ?? { message: 'Generation failed' },
-        fallbackBackendId: defaultBackendId,
-      });
-    }
-
-    const runMetadata = JSON.parse(await readFile(result.metadataRef, 'utf8'));
-    return sendJson(response, 200, {
-      status: 'success',
-      assetId: assetRequest.assetId,
-      assetType: assetRequest.assetType,
-      cacheStatus: result.cacheStatus,
-      cacheKey: result.cacheKey,
-      backendId: result.backendId,
-      recipe,
-      generationPacket: assetRequest.generationPacket,
-      qualityReports: runMetadata.qualityReports ?? [],
-      outputRefs: result.exportRefs,
-      outputUrls: buildOutputUrls(workspace, result.exportRefs),
-      events: result.events,
-    });
-  } catch (error) {
-    return sendJson(response, 502, {
-      status: 'failed',
-      error: { message: error.message },
-      fallbackBackendId: defaultBackendId,
-    });
-  }
-}
-
-function createBackends() {
-  return {
-    prebuilt: createPrebuiltBackend(),
-    'mock-ai': createMockAiBackend(),
-    'codex-local': createCodexLocalBackend(),
-    'image-api': createImageApiBackend(),
-    'chat-svg': createChatSvgBackend(),
-  };
-}
-
-function buildOutputUrls(workspace, refs) {
-  const frames = refs.frames.map((filePath) => toOutputUrl(workspace, filePath));
-  return {
-    frames,
-    frame: frames[0] ?? null,
-    spritesheet: toOutputUrl(workspace, refs.spritesheet),
-    atlas: toOutputUrl(workspace, refs.atlas),
-    run: toOutputUrl(workspace, refs.run),
-  };
-}
-
-function toOutputUrl(workspace, filePath) {
-  const relativePath = relative(workspace, filePath);
-  return `/outputs/${relativePath.split(sep).map(encodeURIComponent).join('/')}`;
-}
-
-async function readJsonBody(request) {
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of request) {
-    size += chunk.length;
-    if (size > BODY_LIMIT_BYTES) throw new Error('Request body too large');
-    chunks.push(chunk);
-  }
-  const raw = Buffer.concat(chunks).toString('utf8');
-  return raw.trim() ? JSON.parse(raw) : {};
-}
-
-async function serveUiFile({ request, response, uiRoot, pathname }) {
-  const requestedPath = pathname === '/' ? '/index.html' : pathname;
-  const filePath = safeResolve(uiRoot, requestedPath);
-  if (!filePath || !existsSync(filePath)) {
-    return sendText(response, 404, 'Not found', 'text/plain; charset=utf-8');
-  }
-  const content = request.method === 'HEAD' ? '' : await readFile(filePath);
-  return send(response, 200, content, contentType(filePath));
-}
-
-async function serveWorkspaceFile({ response, workspace, pathname }) {
-  const outputPath = decodeURIComponent(pathname.replace(/^\/outputs\//, ''));
-  const filePath = safeResolve(workspace, `/${outputPath}`);
-  if (!filePath || !existsSync(filePath)) {
-    return sendText(response, 404, 'Not found', 'text/plain; charset=utf-8');
-  }
-  return send(response, 200, await readFile(filePath), contentType(filePath));
-}
-
-function safeResolve(root, pathname) {
-  const resolvedRoot = resolve(root);
-  const resolvedPath = resolve(resolvedRoot, `.${pathname}`);
-  if (resolvedPath !== resolvedRoot && !resolvedPath.startsWith(`${resolvedRoot}${sep}`)) return null;
-  return resolvedPath;
-}
-
-function sendJson(response, statusCode, body) {
-  return send(response, statusCode, `${JSON.stringify(body, null, 2)}\n`, 'application/json; charset=utf-8');
-}
-
-function sendText(response, statusCode, text, type) {
-  return send(response, statusCode, text, type);
-}
-
-function send(response, statusCode, body, type) {
-  response.writeHead(statusCode, {
-    'content-type': type,
-    'cache-control': 'no-store',
-    'x-content-type-options': 'nosniff',
-  });
-  response.end(body);
-}
-
-function contentType(filePath) {
-  const ext = extname(filePath).toLowerCase();
-  if (ext === '.html') return 'text/html; charset=utf-8';
-  if (ext === '.css') return 'text/css; charset=utf-8';
-  if (ext === '.js') return 'text/javascript; charset=utf-8';
-  if (ext === '.json') return 'application/json; charset=utf-8';
-  if (ext === '.svg') return 'image/svg+xml; charset=utf-8';
-  return 'application/octet-stream';
 }
 
 export function resolveServerOptions(args = argv) {

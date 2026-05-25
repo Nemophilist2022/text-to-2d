@@ -1,6 +1,5 @@
-﻿import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { validateSvgQuality } from '../quality/svg-quality-gate.mjs';
+import { mergeLocalEnv, trimTrailingSlash } from '../config/env.mjs';
 
 export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl = globalThis.fetch } = {}) {
   return {
@@ -73,7 +72,7 @@ export function createChatSvgBackend({ config = loadChatSvgConfig(), fetchImpl =
   };
 }
 
-export function loadChatSvgConfig(env = { ...loadLocalEnv(), ...process.env }) {
+export function loadChatSvgConfig(env = mergeLocalEnv()) {
   return {
     baseUrl: trimTrailingSlash(env.CHAT_API_BASE_URL ?? env.IMAGE_API_BASE_URL ?? 'https://api.vip1129.cc/'),
     apiKey: env.CHAT_API_KEY ?? env.IMAGE_API_KEY,
@@ -155,27 +154,4 @@ function normalizeSvg(svg, size) {
   if (!svg.includes('<svg')) return svg;
   if (svg.includes('width=') && svg.includes('height=')) return svg;
   return svg.replace('<svg ', `<svg width="${size.width}" height="${size.height}" viewBox="0 0 ${size.width} ${size.height}" `);
-}
-
-function loadLocalEnv() {
-  const path = resolve('.env.local');
-  if (!existsSync(path)) return {};
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#') && line.includes('='))
-      .map((line) => {
-        const index = line.indexOf('=');
-        return [line.slice(0, index), stripQuotes(line.slice(index + 1))];
-      }),
-  );
-}
-
-function stripQuotes(value) {
-  return value.replace(/^["']|["']$/g, '');
-}
-
-function trimTrailingSlash(value) {
-  return String(value).replace(/\/+$/, '');
 }

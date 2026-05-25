@@ -3,14 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
 import { runAssetJob } from '../core/orchestrator.mjs';
-import { createPrebuiltBackend } from '../backends/prebuilt-backend.mjs';
-import { createMockAiBackend } from '../backends/mock-ai-backend.mjs';
-import { createCodexLocalBackend } from '../backends/codex-local-backend.mjs';
-import { createImageApiBackend } from '../backends/image-api-backend.mjs';
-import { createChatSvgBackend } from '../backends/chat-svg-backend.mjs';
-import { buildAssetRequestFromRecipe, compileAssetRecipe } from '../input/asset-recipe.mjs';
+import { createBackendRegistry } from '../backends/registry.mjs';
+import { createAssetRequestFromInput } from '../app/asset-job.mjs';
 
-const DEFAULT_TEXT = '生成一个像素风骑士角色';
+const DEFAULT_TEXT = '\u751f\u6210\u4e00\u4e2a\u50cf\u7d20\u98ce\u9a91\u58eb\u89d2\u8272';
 const DEFAULT_SELECTIONS = { assetType: 'character', style: 'pixel', size: '64x64' };
 const DEFAULT_BACKEND_ID = 'chat-svg';
 
@@ -21,18 +17,14 @@ export async function runDemo({
   backendId = DEFAULT_BACKEND_ID,
   skipBackendCompare = false,
 } = {}) {
-  const recipe = compileAssetRecipe({ text, selections });
-  const request = buildAssetRequestFromRecipe(recipe, { backendId });
-  const options = {
-    workspace,
-    backends: {
-      prebuilt: createPrebuiltBackend(),
-      'mock-ai': createMockAiBackend(),
-      'codex-local': createCodexLocalBackend(),
-      'image-api': createImageApiBackend(),
-      'chat-svg': createChatSvgBackend(),
-    },
-  };
+  const { recipe, request } = createAssetRequestFromInput({
+    text,
+    assetType: selections.assetType,
+    style: selections.style,
+    size: selections.size,
+    backendId,
+  });
+  const options = { workspace, backends: createBackendRegistry() };
 
   const first = await runAssetJob(request, options);
   const second = await runAssetJob(request, options);

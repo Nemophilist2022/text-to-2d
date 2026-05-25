@@ -1,5 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { mergeLocalEnv, trimTrailingSlash } from '../config/env.mjs';
 
 export function createImageApiBackend({ config = loadImageApiConfig(), fetchImpl = globalThis.fetch } = {}) {
   return {
@@ -45,7 +44,7 @@ export function createImageApiBackend({ config = loadImageApiConfig(), fetchImpl
   };
 }
 
-export function loadImageApiConfig(env = { ...loadLocalEnv(), ...process.env }) {
+export function loadImageApiConfig(env = mergeLocalEnv()) {
   return {
     baseUrl: trimTrailingSlash(env.IMAGE_API_BASE_URL ?? 'https://api.vip1129.cc/'),
     apiKey: env.IMAGE_API_KEY,
@@ -89,29 +88,6 @@ function wrapApiImageAsSvg({ href, width, height, prompt }) {
     `<desc>${escapeXml(prompt)}</desc>`,
     `</svg>`,
   ].join('');
-}
-
-function loadLocalEnv() {
-  const path = resolve('.env.local');
-  if (!existsSync(path)) return {};
-  return Object.fromEntries(
-    readFileSync(path, 'utf8')
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#') && line.includes('='))
-      .map((line) => {
-        const index = line.indexOf('=');
-        return [line.slice(0, index), stripQuotes(line.slice(index + 1))];
-      }),
-  );
-}
-
-function stripQuotes(value) {
-  return value.replace(/^["']|["']$/g, '');
-}
-
-function trimTrailingSlash(value) {
-  return String(value).replace(/\/+$/, '');
 }
 
 function escapeXml(value) {
